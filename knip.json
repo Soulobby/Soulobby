@@ -1,0 +1,6 @@
+{
+	"$schema": "node_modules/knip/schema.json",
+	"entry": "source/sentry.ts",
+	"ignoreBinaries": ["nc"],
+	"ignoreDependencies": ["pg"]
+}

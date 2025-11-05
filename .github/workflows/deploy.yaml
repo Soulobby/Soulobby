@@ -1,0 +1,27 @@
+---
+name: Deploy Soulobby codebase
+on:
+  push:
+    branches: main
+  workflow_dispatch:
+    inputs:
+      no-cache:
+        description: Skip the cache check?
+        type: boolean
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+jobs:
+  deploy:
+    name: Deploy Soulobby
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - run: |
+          flyctl secrets set --access-token $FLY_DEPLOY_TOKEN --stage SENTRY_RELEASE=${{ github.sha }}
+          flyctl deploy --remote-only --access-token $FLY_DEPLOY_TOKEN ${{ github.event.inputs.no-cache == 'true' && '--no-cache' || '' }}
+        env:
+          FLY_DEPLOY_TOKEN: ${{ secrets.FLY_DEPLOY_TOKEN }}

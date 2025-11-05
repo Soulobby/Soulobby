@@ -1,0 +1,54 @@
+name: Update discord.js
+on:
+  schedule:
+    - cron: "30 */12 * * *"
+  workflow_dispatch:
+jobs:
+  update:
+    name: Update discord.js
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Create token
+        id: create-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.APPLICATION_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: Soulobby
+          repositories: Soulobby
+          permission-contents: write
+
+      - uses: actions/checkout@v5
+        with:
+          token: ${{ steps.create-token.outputs.token }}
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v6
+        with:
+          cache: pnpm
+          node-version: 24
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Update discord.js
+        run: pnpm update discord.js
+
+      - name: Update files
+        run: |
+          git config user.name Soulobby[bot]
+          git config user.email "${{ vars.APPLICATION_USER_ID }}+Soulobby[bot]@users.noreply.github.com"
+          git add .
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit --message "build: Update discord.js"
+            git push
+          fi
+        env:
+          GITHUB_TOKEN: ${{ steps.create-token.outputs.token }}

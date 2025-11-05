@@ -1,0 +1,12 @@
+onlyBuiltDependencies:
+  - esbuild
+  - sharp
+minimumReleaseAge: 1440
+minimumReleaseAgeExclude:
+  - discord.js
+  - "@discordjs/builders"
+  - "@discordjs/collection"
+  - "@discordjs/formatters"
+  - "@discordjs/rest"
+  - "@discordjs/util"
+  - "@discordjs/ws"

@@ -1,0 +1,11 @@
+Dockerfile
+.dockerignore
+node_modules/
+.git
+distribution/
+test.ts
+.env.production
+.env.development
+
+# Miscellaneous
+.DS_Store
