@@ -5,10 +5,9 @@ import {
 	ActionRowBuilder,
 	type ButtonInteraction,
 	ChannelType,
-	ChatInputCommandInteraction,
+	type ChatInputCommandInteraction,
 	type Client,
 	Collection,
-	type CommandInteractionOptionResolver,
 	ContainerBuilder,
 	channelMention,
 	DangerButtonBuilder,
@@ -26,6 +25,7 @@ import {
 	RESTJSONErrorCodes,
 	roleMention,
 	SecondaryButtonBuilder,
+	SeparatorSpacingSize,
 	type Snowflake,
 	SnowflakeUtil,
 	type TextChannel,
@@ -33,7 +33,7 @@ import {
 	TextInputStyle,
 	TimestampStyles,
 	type User,
-	UserContextMenuCommandInteraction,
+	type UserContextMenuCommandInteraction,
 	userMention,
 } from "discord.js";
 import { hash } from "hasha";
@@ -1011,118 +1011,129 @@ export default class Request extends Base {
 		);
 	}
 
-	public static async information(
+	public async information(
 		interaction:
+			| ButtonInteraction<"cached">
 			| ChatInputCommandInteraction<"cached">
 			| UserContextMenuCommandInteraction<"cached">,
 	) {
-		let number: number | null = null;
-		let user: User | null = null;
-		let channel: ReturnType<CommandInteractionOptionResolver["getChannel"]> = null;
+		const user = await interaction.client.users.fetch(this.userId, { cache: false });
+		const { id, applicationFormat, transcript } = this;
 
-		if (interaction instanceof ChatInputCommandInteraction) {
-			const { options } = interaction;
+		const container = new ContainerBuilder()
+			.addSectionComponents((section) => {
+				section
+					.setThumbnailAccessory((thumbnail) => thumbnail.setURL(displayAvatarURL(user)))
+					.addTextDisplayComponents((textDisplay) => textDisplay.setContent(`## Request ${id}`))
+					.addTextDisplayComponents((textDisplay) => textDisplay.setContent(user.toString()));
 
-			if (options.data[0].options && options.data[0].options.length > 0) {
-				number = options.getInteger("number");
-				user = options.getUser("user");
-				channel = options.getChannel("channel");
-
-				if ([number, user, channel].filter((option) => option === null).length !== 2) {
-					await interaction.reply({
-						content: "Please only provide one option.",
-						flags: MessageFlags.Ephemeral,
-					});
-
-					return;
+				if (applicationFormat) {
+					section.addTextDisplayComponents((textDisplay) =>
+						textDisplay.setContent(`**Application:** ${applicationFormat}`),
+					);
 				}
-			} else {
-				user = interaction.user;
-			}
+
+				return section;
+			})
+			.addSeparatorComponents((separator) =>
+				separator.setDivider().setSpacing(SeparatorSpacingSize.Small),
+			);
+
+		const textDisplay = new TextDisplayBuilder().setContent(
+			`**Status:** ${this.status}\n**Channel:** ${channelMention(this.channelId)}\n**Creation Date:** ${time(this.creationTimestamp, TimestampStyles.ShortDateTime)}\n**Completion Date:** ${this.completionTimestamp === null ? "Not set yet" : time(this.completionTimestamp.getTime(), TimestampStyles.ShortDateTime)}\n**Duration:** ${this.duration}`,
+		);
+
+		if (transcript) {
+			container.addSectionComponents((section) =>
+				section
+					.setLinkButtonAccessory((linkButton) =>
+						linkButton.setLabel("Transcript").setURL(Request.transcriptURL(this.id, transcript)),
+					)
+					.addTextDisplayComponents(textDisplay),
+			);
 		} else {
-			user = interaction.targetUser;
+			container.addTextDisplayComponents(textDisplay);
 		}
 
-		let requests = Request.cache;
-		const userId = number === null ? (user?.id ?? null) : (requests.get(number)?.userId ?? null);
-		const channelId = channel?.id ?? null;
+		const flags: (MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral)[] = [
+			MessageFlags.IsComponentsV2,
+		];
 
-		requests = requests.filter(
-			(request) => request.userId === userId || request.channelId === channelId,
-		);
+		if (interaction.isButton() || interaction.isUserContextMenuCommand()) {
+			flags.push(MessageFlags.Ephemeral);
+		}
+
+		await interaction.reply({ allowedMentions: { parse: [] }, components: [container], flags });
+	}
+
+	public static async informationMultiple(
+		interaction:
+			| ChatInputCommandInteraction<"cached">
+			| UserContextMenuCommandInteraction<"cached">,
+		user: User,
+	) {
+		const requests = this.cache.filter((request) => request.userId === user.id);
 
 		if (requests.size === 0) {
 			await interaction.reply({
-				content: "Couldn't find a matching requester.",
-				flags:
-					interaction instanceof UserContextMenuCommandInteraction
-						? MessageFlags.Ephemeral
-						: undefined,
+				content: `${user} does not have any requests with us.`,
+				flags: MessageFlags.Ephemeral,
 			});
 
 			return;
 		}
 
-		const displayColor = (await interaction.client.guild.members.fetchMe()).displayColor;
-		const requester = user ?? (await interaction.client.users.fetch(requests.first()!.userId));
-		let content = `${requester} has made ${requests.size === 1 ? "a request" : `${requests.size} requests`} with us.`;
-
-		let embeds = requests.reduce<EmbedBuilder[]>((embeds, request) => {
-			const embed = new EmbedBuilder()
-				.setColor(displayColor)
-				.setFields(
-					{ name: "Status", value: String(request.status), inline: true },
-					{ name: "Channel", value: channelMention(request.channelId), inline: true },
-					{
-						name: "Transcript",
-						value: request.transcript
-							? `[Download](${Request.transcriptURL(request.id, request.transcript)})`
-							: "Unavailable",
-						inline: true,
-					},
-					{
-						name: "Creation Date",
-						value: time(request.creationTimestamp, TimestampStyles.ShortDateTime),
-						inline: true,
-					},
-					{
-						name: "Completion Date",
-						value:
-							request.completionTimestamp === null
-								? "Not set yet"
-								: time(request.completionTimestamp.getTime(), TimestampStyles.ShortDateTime),
-						inline: true,
-					},
-					{ name: "Duration", value: request.duration, inline: true },
-				)
-				.setTitle(`Request ${request.id}`);
-
-			if (request.applicationFormat) {
-				embed.setDescription(request.applicationFormat);
-			}
-
-			embeds.push(embed);
-			return embeds;
-		}, []);
-
-		if (embeds.length > 10) {
-			content += " Only the 10 most recent requests are showing.";
-			embeds = embeds.slice(-10);
+		if (requests.size === 1) {
+			await requests.first()!.information(interaction);
+			return;
 		}
 
-		embeds[0].setAuthor({
-			name: requester.tag,
-			icon_url: displayAvatarURL(requester),
-		});
+		const container = new ContainerBuilder().addSectionComponents((section) =>
+			section
+				.setThumbnailAccessory((thumbnail) => thumbnail.setURL(displayAvatarURL(user)))
+				.addTextDisplayComponents((textDisplay) =>
+					textDisplay.setContent(`## Requests for ${user.username}`),
+				)
+				.addTextDisplayComponents((textDisplay) => textDisplay.setContent(user.toString()))
+				.addTextDisplayComponents((textDisplay) =>
+					textDisplay.setContent(
+						`Showing the recent ${Math.min(requests.size, 8)} of ${requests.size} requests.`,
+					),
+				),
+		);
+
+		for (const request of requests.last(8).values()) {
+			container
+				.addSeparatorComponents((separator) =>
+					separator.setDivider().setSpacing(SeparatorSpacingSize.Small),
+				)
+				.addSectionComponents((section) =>
+					section
+						.setSecondaryButtonAccessory((button) =>
+							button
+								.setLabel("View")
+								.setCustomId(`${CustomId.RequestViewRequestInformation}§${request.id}`),
+						)
+						.addTextDisplayComponents((textDisplay) =>
+							textDisplay.setContent(
+								`### Request ${request.id}\n\n**Status:** ${request.status}\n**Channel:** ${channelMention(request.channelId)}\n**Creation Date:** ${time(request.creationTimestamp, TimestampStyles.ShortDateTime)}\n**Completion Date:** ${request.completionTimestamp === null ? "Not set yet" : time(request.completionTimestamp.getTime(), TimestampStyles.ShortDateTime)}\n**Duration:** ${request.duration}`,
+							),
+						),
+				);
+		}
+
+		const flags: (MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral)[] = [
+			MessageFlags.IsComponentsV2,
+		];
+
+		if (interaction.isUserContextMenuCommand()) {
+			flags.push(MessageFlags.Ephemeral);
+		}
 
 		await interaction.reply({
 			allowedMentions: { parse: [] },
-			content,
-			embeds,
-			flags:
-				interaction instanceof UserContextMenuCommandInteraction
-					? MessageFlags.Ephemeral
-					: undefined,
+			components: [container],
+			flags,
 		});
 	}
 

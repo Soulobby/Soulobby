@@ -153,6 +153,7 @@ export default {
 
 		if (interaction.isButton()) {
 			const { customId } = interaction;
+			const [id, ...parts] = customId.split("§") as [string, ...string[]];
 
 			try {
 				if (customId === MAIL_REPORT_BUTTON) {
@@ -234,6 +235,11 @@ export default {
 						.get(Number(requestRegExp.groups.No))!
 						.handleDelay(interaction, type, status);
 
+					return;
+				}
+
+				if (id === CustomId.RequestViewRequestInformation) {
+					await Request.cache.get(Number(parts[0]))!.information(interaction);
 					return;
 				}
 

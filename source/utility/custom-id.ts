@@ -3,4 +3,5 @@ export enum CustomId {
 	RequestModalPlayerName = "1",
 	RequestModalMetadata = "2",
 	RequestModalIshharaProof = "3",
+	RequestViewRequestInformation = "4",
 }

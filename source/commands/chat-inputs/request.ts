@@ -1,8 +1,9 @@
 import {
+	type AutocompleteInteraction,
 	type ChatInputCommandInteraction,
 	MessageFlags,
+	type Snowflake,
 	TimestampStyles,
-	type UserContextMenuCommandInteraction,
 } from "discord.js";
 import { hiScore, profile } from "runescape";
 import Request from "../../models/Request.js";
@@ -11,8 +12,69 @@ import { QUEUE_CHAT_CHANNEL_ID } from "../../utility/configuration.js";
 import { type RequestCompletedStatusViaUser, RequestStatus } from "../../utility/constants.js";
 import { consoleLog, isRSN, time } from "../../utility/functions.js";
 
+interface FormatAutocompleteResponseValue {
+	id?: number;
+	userId?: Snowflake;
+}
+
+function formatAutocompleteResponseValue({ id, userId }: FormatAutocompleteResponseValue) {
+	return JSON.stringify({ id, userId });
+}
+
+function formatAutocompleteResponse(request: Request, userId?: Snowflake) {
+	const userDetails = `${request.application?.RSN ? `${request.application.RSN}, ` : ""}${request.userId}`;
+
+	return userId
+		? { name: userDetails, value: formatAutocompleteResponseValue({ userId }) }
+		: {
+				name: `#${request.id} (${userDetails})`,
+				value: formatAutocompleteResponseValue({ id: request.id }),
+			};
+}
+
 export default {
 	name: "request" as const,
+	async autocomplete(interaction: AutocompleteInteraction<"cached">) {
+		const focused = interaction.options.getFocused().value.toUpperCase();
+		const options = [];
+
+		// Return the recent 25 results for no input.
+		if (focused.length === 0) {
+			for (const request of Request.cache.last(25)) {
+				options.push(formatAutocompleteResponse(request));
+			}
+		} else {
+			// Early exit for exact id match.
+			const request = Request.cache.get(Number(focused));
+
+			if (request) {
+				options.push(formatAutocompleteResponse(request));
+			} else {
+				for (const request of Request.cache.toReversed().values()) {
+					// Early exit for exact matches.
+					if (request.userId === focused) {
+						options.push(formatAutocompleteResponse(request, focused));
+						break;
+					}
+
+					if (request.channelId === focused) {
+						options.push(formatAutocompleteResponse(request));
+						break;
+					}
+
+					// Best guess fallback.
+					if (
+						request.application?.RSN?.toUpperCase().includes(focused) ||
+						request.id.toString().includes(focused)
+					) {
+						options.push(formatAutocompleteResponse(request));
+					}
+				}
+			}
+		}
+
+		await interaction.respond(options);
+	},
 	async chatInput(interaction: ChatInputCommandInteraction<"cached">) {
 		switch (interaction.options.getSubcommand()) {
 			case "allow": {
@@ -226,12 +288,46 @@ export default {
 			completion_timestamp: completionTimestamp,
 		});
 	},
-	async info(
-		interaction:
-			| ChatInputCommandInteraction<"cached">
-			| UserContextMenuCommandInteraction<"cached">,
-	) {
-		await Request.information(interaction);
+	async info(interaction: ChatInputCommandInteraction<"cached">) {
+		let id: FormatAutocompleteResponseValue["id"];
+		let userId: FormatAutocompleteResponseValue["userId"];
+
+		try {
+			({ id, userId } = JSON.parse(
+				interaction.options.getString("query", true),
+			) as FormatAutocompleteResponseValue);
+		} catch {
+			await interaction.reply({
+				content: "Cannot parse request information.",
+				flags: MessageFlags.Ephemeral,
+			});
+
+			return;
+		}
+
+		if (id) {
+			const request = Request.cache.get(id);
+
+			if (!request) {
+				await interaction.reply({
+					content: "Invalid request id.",
+					flags: MessageFlags.Ephemeral,
+				});
+
+				return;
+			}
+
+			await request.information(interaction);
+			return;
+		}
+
+		if (userId) {
+			const user = await interaction.client.users.fetch(userId, { cache: false });
+			await Request.informationMultiple(interaction, user);
+			return;
+		}
+
+		throw new Error("Invalid autocomplete response value.");
 	},
 	async verify(interaction: ChatInputCommandInteraction<"cached">) {
 		const request = Request.cache.find(
