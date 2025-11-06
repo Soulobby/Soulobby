@@ -27,6 +27,7 @@ export interface MessagesPacket {
 	content: string;
 	attachments: string[];
 	replied_id: Snowflake | null;
+	created_at: Date;
 }
 
 let messageLogWebhook: Webhook | null = null;
@@ -40,6 +41,7 @@ export async function messageLogUpsert({
 	id,
 	reference,
 	type,
+	createdAt
 }: Message<true>) {
 	await pg<MessagesPacket>(Table.Messages)
 		.insert({
@@ -49,6 +51,7 @@ export async function messageLogUpsert({
 			message_id: id,
 			content,
 			attachments: attachments.map(({ proxyURL }) => proxyURL),
+			created_at: createdAt,
 			replied_id: type === MessageType.Reply ? reference!.messageId! : null,
 		})
 		.onConflict("message_id")
