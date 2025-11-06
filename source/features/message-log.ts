@@ -1,3 +1,4 @@
+import { Buffer } from "node:buffer";
 import { diffLines, diffWords } from "diff";
 import {
 	EmbedBuilder,
@@ -166,7 +167,7 @@ export async function messageLogHandleMessageDeleteBulk(
 		embeds: [embed],
 		files: [
 			{
-				attachment: transcriptedMessages.join("\n"),
+				attachment: Buffer.from(transcriptedMessages.join("\n")),
 				name: `message-delete-bulk-${Date.now()}.txt`,
 			},
 		],
