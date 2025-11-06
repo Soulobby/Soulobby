@@ -42,7 +42,7 @@ export async function messageLogUpsert({
 	id,
 	reference,
 	type,
-	createdAt
+	createdAt,
 }: Message<true>) {
 	await pg<MessagesPacket>(Table.Messages)
 		.insert({
