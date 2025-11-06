@@ -69,6 +69,10 @@ export default {
 					) {
 						options.push(formatAutocompleteResponse(request));
 					}
+
+					if (options.length === 25) {
+						break;
+					}
 				}
 			}
 		}
