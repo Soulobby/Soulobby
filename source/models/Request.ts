@@ -1024,8 +1024,10 @@ export default class Request extends Base {
 			.addSectionComponents((section) => {
 				section
 					.setThumbnailAccessory((thumbnail) => thumbnail.setURL(displayAvatarURL(user)))
-					.addTextDisplayComponents((textDisplay) => textDisplay.setContent(`## Request ${id}`))
-					.addTextDisplayComponents((textDisplay) => textDisplay.setContent(user.toString()));
+					.addTextDisplayComponents(
+						(textDisplay) => textDisplay.setContent(`## Request ${id}`),
+						(textDisplay) => textDisplay.setContent(user.toString()),
+					);
 
 				if (applicationFormat) {
 					section.addTextDisplayComponents((textDisplay) =>
@@ -1091,14 +1093,13 @@ export default class Request extends Base {
 		const container = new ContainerBuilder().addSectionComponents((section) =>
 			section
 				.setThumbnailAccessory((thumbnail) => thumbnail.setURL(displayAvatarURL(user)))
-				.addTextDisplayComponents((textDisplay) =>
-					textDisplay.setContent(`## Requests for ${user.username}`),
-				)
-				.addTextDisplayComponents((textDisplay) => textDisplay.setContent(user.toString()))
-				.addTextDisplayComponents((textDisplay) =>
-					textDisplay.setContent(
-						`Showing the recent ${Math.min(requests.size, 8)} of ${requests.size} requests.`,
-					),
+				.addTextDisplayComponents(
+					(textDisplay) => textDisplay.setContent(`## Requests for ${user.username}`),
+					(textDisplay) => textDisplay.setContent(user.toString()),
+					(textDisplay) =>
+						textDisplay.setContent(
+							`Showing the recent ${Math.min(requests.size, 8)} of ${requests.size} requests.`,
+						),
 				),
 		);
 
