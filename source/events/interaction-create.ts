@@ -1,4 +1,11 @@
-import { Events, type Interaction, InteractionType, MessageFlags } from "discord.js";
+import {
+	DiscordAPIError,
+	Events,
+	type Interaction,
+	InteractionType,
+	MessageFlags,
+	RESTJSONErrorCodes,
+} from "discord.js";
 import { IGNORE_LIST_EVIDENCE_REMOVAL_STRING_SELECT_MENU_CUSTOM_ID } from "../commands/chat-inputs/ignore.js";
 import {
 	AUTOCOMPLETE_COMMANDS,
@@ -46,17 +53,19 @@ import {
 } from "../models/QuickQuiz.js";
 import { MAIL_REPORT_BUTTON, Report } from "../models/Report.js";
 import Request, { REQUEST_ROLE_CUSTOM_ID } from "../models/Request.js";
+import pino from "../pino.js";
 import { GUILD_ID } from "../utility/configuration.js";
 import type { RequestCompletedStatusViaUser } from "../utility/constants.js";
 import { CustomId } from "../utility/custom-id.js";
-import { consoleLog } from "../utility/functions.js";
 import type { Event } from "./index.js";
 
 const name = Events.InteractionCreate;
 
 const interactionErrorResponseBody = {
 	content: "An error was encountered. Rest easy, it's being tracked!",
-	flags: MessageFlags.Ephemeral,
+	components: [],
+	embeds: [],
+	flags: MessageFlags.Ephemeral | MessageFlags.IsComponentsV2,
 } as const;
 
 async function recoverInteractionError(interaction: Interaction, error: unknown) {
@@ -77,7 +86,16 @@ async function recoverInteractionError(interaction: Interaction, error: unknown)
 		}
 	}
 
-	void interaction.client.log({ content: errorTypeString, error });
+	pino.error(error, errorTypeString);
+
+	// We cannot respond to this.
+	if (
+		error instanceof DiscordAPIError &&
+		(error.code === RESTJSONErrorCodes.UnknownInteraction ||
+			error.code === RESTJSONErrorCodes.CannotSendAnEmptyMessage)
+	) {
+		return;
+	}
 
 	try {
 		if (interaction.isAutocomplete()) {
@@ -88,7 +106,7 @@ async function recoverInteractionError(interaction: Interaction, error: unknown)
 			await interaction.reply(interactionErrorResponseBody);
 		}
 	} catch (error) {
-		consoleLog(`Failed to follow up or reply from recovering an interaction error: ${error}`);
+		pino.error(error, "Failed to follow up or reply from recovering an interaction error.");
 	}
 }
 
@@ -100,15 +118,17 @@ export default {
 		}
 
 		if (interaction.isChatInputCommand()) {
+			pino.info(interaction, `Chat input command: ${interaction}`);
 			const { commandName } = interaction;
 			const command = CHAT_INPUT_COMMANDS.find(({ name }) => name === commandName);
 
 			if (!command) {
-				void interaction.client.log(
+				pino.warn(
+					interaction,
 					`Received an unknown chat input command interaction (\`${commandName}\`).`,
 				);
 
-				void interaction.reply({
+				await interaction.reply({
 					content: "This command is drifting away with the souls of the underworld...",
 					flags: MessageFlags.Ephemeral,
 				});
@@ -119,22 +139,24 @@ export default {
 			try {
 				await command.chatInput(interaction);
 			} catch (error) {
-				void recoverInteractionError(interaction, error);
+				await recoverInteractionError(interaction, error);
 			}
 
 			return;
 		}
 
 		if (interaction.isUserContextMenuCommand()) {
+			pino.info(interaction, `User context menu command: ${interaction.commandName}`);
 			const { commandName } = interaction;
 			const command = USER_CONTEXT_MENU_COMMANDS.find(({ name }) => name === commandName);
 
 			if (!command) {
-				void interaction.client.log(
+				pino.warn(
+					interaction,
 					`Received an unknown user context menu command interaction (\`${commandName}\`).`,
 				);
 
-				void interaction.reply({
+				await interaction.reply({
 					content: "This command is drifting away with the souls of the underworld...",
 					flags: MessageFlags.Ephemeral,
 				});
@@ -145,13 +167,14 @@ export default {
 			try {
 				await command.userContextMenu(interaction);
 			} catch (error) {
-				void recoverInteractionError(interaction, error);
+				await recoverInteractionError(interaction, error);
 			}
 
 			return;
 		}
 
 		if (interaction.isButton()) {
+			pino.info(interaction, `Button: ${interaction.customId}`);
 			const { customId } = interaction;
 			const [id, ...parts] = customId.split("§") as [string, ...string[]];
 
@@ -268,13 +291,13 @@ export default {
 					return;
 				}
 			} catch (error) {
-				void recoverInteractionError(interaction, error);
+				await recoverInteractionError(interaction, error);
 				return;
 			}
 
-			void interaction.client.log(`Received an unknown button interaction (\`${customId}\`).`);
+			pino.warn(interaction, `Received an unknown button interaction (\`${customId}\`).`);
 
-			void interaction.reply({
+			await interaction.reply({
 				content: "You venture forth into the land of the unknown, but nothing seems to be around.",
 				flags: MessageFlags.Ephemeral,
 			});
@@ -283,6 +306,7 @@ export default {
 		}
 
 		if (interaction.isStringSelectMenu()) {
+			pino.info(interaction, `String select: ${interaction.customId}`);
 			const { customId } = interaction;
 
 			try {
@@ -295,15 +319,16 @@ export default {
 					return;
 				}
 			} catch (error) {
-				void recoverInteractionError(interaction, error);
+				await recoverInteractionError(interaction, error);
 				return;
 			}
 
-			void interaction.client.log(
+			pino.warn(
+				interaction,
 				`Received an unknown string select menu interaction (\`${customId}\`).`,
 			);
 
-			void interaction.reply({
+			await interaction.reply({
 				content: "It appears you have selected an option that no longer exists. Incredible!",
 				flags: MessageFlags.Ephemeral,
 			});
@@ -312,6 +337,7 @@ export default {
 		}
 
 		if (interaction.isModalSubmit()) {
+			pino.info(interaction, `Modal submit: ${interaction.customId}`);
 			const { customId } = interaction;
 
 			try {
@@ -332,13 +358,13 @@ export default {
 					}
 				}
 			} catch (error) {
-				void recoverInteractionError(interaction, error);
+				await recoverInteractionError(interaction, error);
 				return;
 			}
 
-			void interaction.client.log(`Received an unknown modal interaction (\`${customId}\`).`);
+			pino.warn(interaction, `Received an unknown modal interaction (\`${customId}\`).`);
 
-			void interaction.reply({
+			await interaction.reply({
 				content:
 					"You entered all that text... for nothing. We have no idea what that is. _You_ have no idea what that is. I guess life just be like that sometimes.",
 				flags: MessageFlags.Ephemeral,
@@ -348,33 +374,36 @@ export default {
 		}
 
 		if (interaction.isAutocomplete()) {
+			pino.info(interaction, `Autocomplete: ${interaction.commandName}`);
 			const { commandName } = interaction;
 			const command = AUTOCOMPLETE_COMMANDS.find(({ name }) => name === commandName);
 
 			if (!command) {
-				void interaction.client.log(
+				pino.warn(
+					interaction,
 					`Received an unknown autocomplete interaction (\`${commandName}\`).`,
 				);
 
-				void interaction.respond([]);
+				await interaction.respond([]);
 				return;
 			}
 
 			try {
 				await command.autocomplete(interaction);
 			} catch (error) {
-				void recoverInteractionError(interaction, error);
+				await recoverInteractionError(interaction, error);
 			}
 
 			return;
 		}
 
 		if (interaction.isMessageContextMenuCommand()) {
-			void interaction.client.log(
+			pino.warn(
+				interaction,
 				`Received an unknown message context menu interaction (\`${interaction.commandName}\`).`,
 			);
 
-			void interaction.reply({
+			await interaction.reply({
 				content:
 					"This message is far too powerful for this command to be used on. Or maybe you need to level up?",
 				flags: MessageFlags.Ephemeral,

@@ -10,7 +10,8 @@ import {
 	QuestTitle,
 	questDetails,
 } from "runescape";
-import { consoleLog, isRSN } from "../../utility/functions.js";
+import pino from "../../pino.js";
+import { isRSN } from "../../utility/functions.js";
 
 export default {
 	name: "lookup" as const,
@@ -24,8 +25,10 @@ export default {
 		}
 
 		const data =
-			(await profile({ activities: 0, name }).catch(consoleLog)) ??
-			(await hiScore({ name }).catch(consoleLog));
+			(await profile({ activities: 0, name }).catch((error) =>
+				pino.warn(error, "Error fetching profile data."),
+			)) ??
+			(await hiScore({ name }).catch((error) => pino.warn(error, "Error fetching HiScore data.")));
 
 		if (!data) {
 			await interaction.editReply(

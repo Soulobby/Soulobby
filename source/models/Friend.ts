@@ -5,6 +5,7 @@ import {
 	Collection,
 	DiscordAPIError,
 	EmbedBuilder,
+	type GuildMember,
 	Locale,
 	messageLink,
 	RESTJSONErrorCodes,
@@ -13,6 +14,7 @@ import {
 	userMention,
 } from "discord.js";
 import pg, { Table } from "../pg.js";
+import pino from "../pino.js";
 import {
 	CAPTAIN_ROLE_ID,
 	EX_FRIENDS_LIST_CHANNEL_ID,
@@ -365,107 +367,94 @@ export default class Friend extends Base {
 			return;
 		}
 
+		let guildMember: GuildMember;
+
 		try {
-			const guildMember = await this.client.guild.members.fetch(this.userId);
-			const roles = new Set(guildMember.roles.cache.keys());
-
-			switch (this.rank) {
-				case Rank.General: {
-					roles.add(GENERAL_ROLE_ID);
-					roles.add(STAR_RANK_ROLE_ID);
-					roles.add(RANK_ROLE_ID);
-					roles.delete(SMILEY_ROLE_ID);
-					roles.delete(EX_RANK_ROLE_ID);
-					break;
-				}
-				case Rank.Captain: {
-					roles.delete(GENERAL_ROLE_ID);
-					roles.add(CAPTAIN_ROLE_ID);
-					roles.add(STAR_RANK_ROLE_ID);
-					roles.add(RANK_ROLE_ID);
-					roles.delete(SMILEY_ROLE_ID);
-					roles.delete(EX_RANK_ROLE_ID);
-					break;
-				}
-				case Rank.Lieutenant: {
-					roles.delete(GENERAL_ROLE_ID);
-					roles.delete(CAPTAIN_ROLE_ID);
-					roles.add(STAR_RANK_ROLE_ID);
-					roles.add(RANK_ROLE_ID);
-					roles.delete(SMILEY_ROLE_ID);
-					roles.delete(EX_RANK_ROLE_ID);
-					break;
-				}
-				case Rank.Sergeant:
-				case Rank.Corporal:
-				case Rank.Recruit: {
-					roles.delete(GENERAL_ROLE_ID);
-					roles.delete(CAPTAIN_ROLE_ID);
-					roles.delete(STAR_RANK_ROLE_ID);
-					roles.add(RANK_ROLE_ID);
-					roles.delete(SMILEY_ROLE_ID);
-					roles.delete(EX_RANK_ROLE_ID);
-					break;
-				}
-				case Rank.Smiley: {
-					roles.delete(GENERAL_ROLE_ID);
-					roles.delete(STAR_RANK_ROLE_ID);
-					roles.delete(CAPTAIN_ROLE_ID);
-					roles.delete(RANK_ROLE_ID);
-					roles.delete(QUEUE_HELPER_ROLE_ID);
-					roles.add(SMILEY_ROLE_ID);
-
-					if (this.isExRank()) {
-						roles.add(EX_RANK_ROLE_ID);
-					}
-
-					break;
-				}
-				case null: {
-					roles.delete(GENERAL_ROLE_ID);
-					roles.delete(CAPTAIN_ROLE_ID);
-					roles.delete(STAR_RANK_ROLE_ID);
-					roles.delete(RANK_ROLE_ID);
-					roles.delete(QUEUE_HELPER_ROLE_ID);
-					roles.delete(SMILEY_ROLE_ID);
-
-					if (this.isExRank()) {
-						roles.add(EX_RANK_ROLE_ID);
-					}
-
-					break;
-				}
-			}
-
-			await guildMember.roles.set([...roles.values()]);
+			guildMember = await this.client.guild.members.fetch(this.userId);
 		} catch (error) {
-			if (error instanceof DiscordAPIError) {
-				if (error.code === RESTJSONErrorCodes.MissingPermissions) {
-					void this.client.log(
-						`Attempted to update the roles of \`${this.RSN}\` (${userMention(
-							this.userId,
-						)}), but lacked permissions to do so.`,
-					);
+			if (error instanceof DiscordAPIError && error.code === RESTJSONErrorCodes.UnknownMember) {
+				pino.warn(
+					error,
+					`Attempted to update the roles of \`${this.RSN}\` (${userMention(this.userId)}), but cannot find them in this server.`,
+				);
 
-					return;
-				}
-
-				if (error.code === RESTJSONErrorCodes.UnknownMember) {
-					void this.client.log(
-						`Attempted to update the roles of \`${this.RSN}\` (${userMention(
-							this.userId,
-						)}), but cannot find them in this server.`,
-					);
-
-					return;
-				}
+				return;
 			}
 
-			void this.client.log({
-				content: `Encountered an error whilst updating the roles of \`${this.RSN}\` (${userMention(this.userId)}).`,
-				error,
-			});
+			throw error;
 		}
+
+		const roles = new Set(guildMember.roles.cache.keys());
+
+		switch (this.rank) {
+			case Rank.General: {
+				roles.add(GENERAL_ROLE_ID);
+				roles.add(STAR_RANK_ROLE_ID);
+				roles.add(RANK_ROLE_ID);
+				roles.delete(SMILEY_ROLE_ID);
+				roles.delete(EX_RANK_ROLE_ID);
+				break;
+			}
+			case Rank.Captain: {
+				roles.delete(GENERAL_ROLE_ID);
+				roles.add(CAPTAIN_ROLE_ID);
+				roles.add(STAR_RANK_ROLE_ID);
+				roles.add(RANK_ROLE_ID);
+				roles.delete(SMILEY_ROLE_ID);
+				roles.delete(EX_RANK_ROLE_ID);
+				break;
+			}
+			case Rank.Lieutenant: {
+				roles.delete(GENERAL_ROLE_ID);
+				roles.delete(CAPTAIN_ROLE_ID);
+				roles.add(STAR_RANK_ROLE_ID);
+				roles.add(RANK_ROLE_ID);
+				roles.delete(SMILEY_ROLE_ID);
+				roles.delete(EX_RANK_ROLE_ID);
+				break;
+			}
+			case Rank.Sergeant:
+			case Rank.Corporal:
+			case Rank.Recruit: {
+				roles.delete(GENERAL_ROLE_ID);
+				roles.delete(CAPTAIN_ROLE_ID);
+				roles.delete(STAR_RANK_ROLE_ID);
+				roles.add(RANK_ROLE_ID);
+				roles.delete(SMILEY_ROLE_ID);
+				roles.delete(EX_RANK_ROLE_ID);
+				break;
+			}
+			case Rank.Smiley: {
+				roles.delete(GENERAL_ROLE_ID);
+				roles.delete(STAR_RANK_ROLE_ID);
+				roles.delete(CAPTAIN_ROLE_ID);
+				roles.delete(RANK_ROLE_ID);
+				roles.delete(QUEUE_HELPER_ROLE_ID);
+				roles.add(SMILEY_ROLE_ID);
+
+				if (this.isExRank()) {
+					roles.add(EX_RANK_ROLE_ID);
+				}
+
+				break;
+			}
+			case null: {
+				roles.delete(GENERAL_ROLE_ID);
+				roles.delete(CAPTAIN_ROLE_ID);
+				roles.delete(STAR_RANK_ROLE_ID);
+				roles.delete(RANK_ROLE_ID);
+				roles.delete(QUEUE_HELPER_ROLE_ID);
+				roles.delete(SMILEY_ROLE_ID);
+
+				if (this.isExRank()) {
+					roles.add(EX_RANK_ROLE_ID);
+				}
+
+				break;
+			}
+		}
+
+		await guildMember.roles.set([...roles.values()]);
 	}
 
 	public isAdded(): this is this & {

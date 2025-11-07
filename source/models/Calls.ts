@@ -16,6 +16,7 @@ import { hiScore, profile } from "runescape";
 import { Mixin } from "ts-mixer";
 import { CALL_CACHE, updateCallCache } from "../caches/calls.js";
 import pg, { Table } from "../pg.js";
+import pino from "../pino.js";
 import {
 	CALLS_VIEW_CHANNEL_ID,
 	CALLS_VIEW1_MESSAGE_ID,
@@ -53,7 +54,7 @@ import {
 	SOUL_OBELISK_VIEW_SYMBOL,
 } from "../utility/constants.js";
 import { EMOJIS } from "../utility/emojis.js";
-import { consoleLog, isP2PEnglishServer, time } from "../utility/functions.js";
+import { isP2PEnglishServer, time } from "../utility/functions.js";
 
 enum CallLocation {
 	Merchant = 0,
@@ -372,7 +373,10 @@ export class SoulObeliskCall extends Mixin(BaseCall, SoulObeliskLocation, BaseSt
 		const existingCall = CALL_CACHE.get(this.world)![this.type];
 
 		if (existingCall) {
-			await message.delete().catch((error) => consoleLog(error));
+			await message
+				.delete()
+				.catch((error) => pino.error(error, "Failed to delete an existing soul obelisk call."));
+
 			return;
 		}
 
@@ -448,7 +452,12 @@ export class CorruptedScarabsCall extends Mixin(BaseCall, BaseState) {
 		const existingCall = CALL_CACHE.get(this.world)![this.type];
 
 		if (existingCall) {
-			await message.delete().catch((error) => consoleLog(error));
+			await message
+				.delete()
+				.catch((error) =>
+					pino.error(error, "Failed to delete an existing corrupted scarabs call."),
+				);
+
 			return;
 		}
 
@@ -824,7 +833,10 @@ export async function updateCall(
 		(newCall.type !== CallType.SoulObelisk && newCall.type !== CallType.CorruptedScarabs)
 	) {
 		// The message was edited to no longer be a call. Delete it.
-		await message.delete().catch((error) => consoleLog(error));
+		await message
+			.delete()
+			.catch((error) => pino.error(error, "Failed to delete a now-invalid call."));
+
 		return;
 	}
 
@@ -839,7 +851,11 @@ export async function updateCall(
 	}
 
 	if (call.type !== newCall.type) {
-		await message.reactions.removeAll().catch((error) => consoleLog(error));
+		await message.reactions
+			.removeAll()
+			.catch((error) =>
+				pino.error(error, "Failed to remove all reactions when swapping call types."),
+			);
 	}
 
 	updateCallCache(call.world, { [call.type]: null });

@@ -1,5 +1,4 @@
 import { URL } from "node:url";
-import { inspect } from "node:util";
 import {
 	type Attachment,
 	Collection,
@@ -42,11 +41,6 @@ export const enum LogType {
 	CorruptedEggQueue = 1,
 	RankApplication = 2,
 	QuickQuizLog = 3,
-}
-
-export function consoleLog(consoleLog: unknown, stamp = new Date().toISOString()) {
-	console.log(`- - - - - ${stamp} - - - - -`);
-	console.log(inspect(consoleLog, false, Number.POSITIVE_INFINITY, true));
 }
 
 export function isValidAttachment(attachment: Attachment) {

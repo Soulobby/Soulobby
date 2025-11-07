@@ -8,9 +8,10 @@ import {
 import { hiScore, profile } from "runescape";
 import Request from "../../models/Request.js";
 import UserData from "../../models/UserData.js";
+import pino from "../../pino.js";
 import { QUEUE_CHAT_CHANNEL_ID } from "../../utility/configuration.js";
 import { type RequestCompletedStatusViaUser, RequestStatus } from "../../utility/constants.js";
-import { consoleLog, isRSN, time } from "../../utility/functions.js";
+import { isRSN, time } from "../../utility/functions.js";
 
 interface FormatAutocompleteResponseValue {
 	id?: number;
@@ -411,8 +412,12 @@ export default {
 
 		if (options.getString("name")) {
 			const data =
-				(await profile({ activities: 0, name }).catch(consoleLog)) ??
-				(await hiScore({ name }).catch(consoleLog));
+				(await profile({ activities: 0, name }).catch((error) =>
+					pino.warn(error, "Error fetching profile data."),
+				)) ??
+				(await hiScore({ name }).catch((error) =>
+					pino.warn(error, "Error fetching HiScore data."),
+				));
 
 			if (!data) {
 				await interaction.editReply(

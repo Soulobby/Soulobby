@@ -1,6 +1,7 @@
 import { Events, UserFlags } from "discord.js";
 import { memberLogSendJoinLeave } from "../features/member-log.js";
 import Friend from "../models/Friend.js";
+import pino from "../pino.js";
 import { GUILD_ID } from "../utility/configuration.js";
 import type { Event } from "./index.js";
 
@@ -16,10 +17,7 @@ export default {
 		try {
 			await memberLogSendJoinLeave(guildMember, true);
 		} catch (error) {
-			void guildMember.client.log({
-				content: "Failed to log member join.",
-				error,
-			});
+			pino.error(error, "Failed to log member join.");
 		}
 
 		if (guildMember.user.flags?.has(UserFlags.Spammer)) {
@@ -27,6 +25,6 @@ export default {
 			return;
 		}
 
-		void Friend.cache.find(({ userId }) => userId === guildMember.id)?.updateRoles();
+		await Friend.cache.find(({ userId }) => userId === guildMember.id)?.updateRoles();
 	},
 } satisfies Event<typeof name>;

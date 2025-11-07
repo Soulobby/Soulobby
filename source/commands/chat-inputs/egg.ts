@@ -161,16 +161,7 @@ export default {
 				return;
 			}
 
-			void interaction.client.log({
-				content: "Failed to edit a corrupted egg.",
-				error,
-			});
-
-			await interaction.editReply({
-				components: [],
-				content: "Encountered an error whilst editing this corrupted egg.",
-				embeds: [],
-			});
+			throw error;
 		}
 	},
 	async info(interaction: ChatInputCommandInteraction<"cached">) {

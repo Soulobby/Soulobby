@@ -2,6 +2,7 @@ import { Events } from "discord.js";
 import { findCallByMessageId } from "../caches/calls.js";
 import { messageLogHandleMessageDelete } from "../features/message-log.js";
 import { deleteCall } from "../models/Calls.js";
+import pino from "../pino.js";
 import { CALLS_CHANNEL_ID, GUILD_ID } from "../utility/configuration.js";
 import { shouldLogMessage } from "../utility/functions.js";
 import type { Event } from "./index.js";
@@ -26,7 +27,7 @@ export default {
 			try {
 				await messageLogHandleMessageDelete(message);
 			} catch (error) {
-				void message.client.log({ content: "Failed to log message delete.", error });
+				pino.error(error, "Failed to log message delete.");
 			}
 		}
 

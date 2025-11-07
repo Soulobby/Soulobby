@@ -2,6 +2,7 @@ import { ChannelType, Events, MessageFlags, PermissionFlagsBits } from "discord.
 import { messageLogUpsert } from "../features/message-log.js";
 import { createCallFromMessage, lookupComponents } from "../models/Calls.js";
 import { Report } from "../models/Report.js";
+import pino from "../pino.js";
 import {
 	CALLS_CHANNEL_ID,
 	GUILD_ID,
@@ -9,7 +10,7 @@ import {
 	QUEUE_HELPER_ROLE_ID,
 } from "../utility/configuration.js";
 import { CallType } from "../utility/constants.js";
-import { consoleLog, shouldLogMessage } from "../utility/functions.js";
+import { shouldLogMessage } from "../utility/functions.js";
 import type { Event } from "./index.js";
 
 const name = Events.MessageCreate;
@@ -24,12 +25,11 @@ export default {
 		if (
 			shouldLogMessage({ bot: message.author.bot, channel: message.channel, guild: message.guild })
 		) {
-			await messageLogUpsert(message).catch(async (error) =>
-				message.client.log({
-					content: "Failed to log message create.",
-					error,
-				}),
-			);
+			try {
+				await messageLogUpsert(message);
+			} catch (error) {
+				pino.error(error, "Failed to log message create.");
+			}
 		}
 
 		const report = Report.cache.get(message.channelId);
@@ -51,7 +51,7 @@ export default {
 		if (call) {
 			if (call.lookup) {
 				if (message.channelId === calls.id) {
-					await message.delete().catch((error) => consoleLog(error));
+					await message.delete();
 					return;
 				}
 

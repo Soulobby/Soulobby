@@ -1,11 +1,11 @@
 import process from "node:process";
-import { captureException } from "@sentry/node";
 import {
 	type AttachmentBuilder,
 	type AttachmentPayload,
 	ChannelType,
 	Client,
 	type EmbedBuilder,
+	Events,
 	GatewayIntentBits,
 	type GuildBasedChannel,
 	type GuildChannelTypes,
@@ -25,6 +25,7 @@ import { Report, type ReportsPacket } from "./models/Report.js";
 import type { RequestPacket } from "./models/Request.js";
 import Request from "./models/Request.js";
 import pg, { Table } from "./pg.js";
+import pino from "./pino.js";
 import {
 	DISCORD_TOKEN,
 	GUILD_ID,
@@ -32,7 +33,7 @@ import {
 	QUICK_QUIZ_LOG_CHANNEL_ID,
 	SOULOBBY_LOG_CHANNEL_ID,
 } from "./utility/configuration.js";
-import { consoleLog, LogType } from "./utility/functions.js";
+import { LogType } from "./utility/functions.js";
 
 interface LogOptions {
 	content?: string;
@@ -98,7 +99,7 @@ class Soulobby<Ready extends boolean = boolean> extends Client<Ready> {
 		const output = error || content;
 
 		if (output) {
-			consoleLog(output, stamp);
+			pino.info(output);
 		}
 
 		let channel: TextChannel;
@@ -131,10 +132,6 @@ class Soulobby<Ready extends boolean = boolean> extends Client<Ready> {
 				)
 		) {
 			throw new Error("Missing permissions to log.");
-		}
-
-		if (error) {
-			captureException(error);
 		}
 
 		for (const embed of embeds) {
@@ -205,6 +202,8 @@ for (const event of events) {
 	client[once ? "once" : "on"](name, fire);
 }
 
+client.on(Events.Error, (error) => pino.error(error));
+
 try {
 	await Promise.all([
 		collectFriends(client),
@@ -213,8 +212,8 @@ try {
 		collectRequests(client),
 	]);
 } catch (error) {
-	consoleLog(error);
-	process.exit();
+	pino.fatal(error, "Error collecting configurations from the database.");
+	process.exit(1);
 }
 
 void client.login(DISCORD_TOKEN);

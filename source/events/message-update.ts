@@ -1,10 +1,10 @@
-import { logger } from "@sentry/node";
 import { Events, PermissionFlagsBits } from "discord.js";
 import { findCallByMessageId } from "../caches/calls.js";
 import { messageLogHandleMessageUpdate } from "../features/message-log.js";
 import { updateCall } from "../models/Calls.js";
+import pino from "../pino.js";
 import { CALLS_CHANNEL_ID, GUILD_ID } from "../utility/configuration.js";
-import { consoleLog, shouldLogMessage } from "../utility/functions.js";
+import { shouldLogMessage } from "../utility/functions.js";
 import type { Event } from "./index.js";
 
 const name = Events.MessageUpdate;
@@ -26,8 +26,7 @@ export default {
 			try {
 				await messageLogHandleMessageUpdate(oldMessage, newMessage);
 			} catch (error) {
-				logger.error("Message update failed.", { oldMessage, newMessage });
-				void newMessage.client.log({ content: "Failed to log message update.", error });
+				pino.error(error, "Failed to log message update.");
 			}
 		}
 
@@ -48,7 +47,7 @@ export default {
 					calls.permissionsFor(newMessage.member).has(PermissionFlagsBits.ManageMessages)
 				)
 			) {
-				await newMessage.delete().catch((error) => consoleLog(error));
+				await newMessage.delete();
 			}
 		}
 	},

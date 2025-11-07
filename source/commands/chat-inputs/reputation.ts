@@ -1,7 +1,8 @@
 import { type ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import { avatar, profile, QuestStatus, QuestTitle, questDetails, SkillId } from "runescape";
+import pino from "../../pino.js";
 import { SMALL_XP_LAMP_EXPERIENCE } from "../../utility/constants.js";
-import { consoleLog, isLevel, isRSN } from "../../utility/functions.js";
+import { isLevel, isRSN } from "../../utility/functions.js";
 
 export default {
 	name: "reputation" as const,
@@ -51,7 +52,9 @@ export default {
 			return;
 		}
 
-		const profileData = await profile({ activities: 0, name }).catch(consoleLog);
+		const profileData = await profile({ activities: 0, name }).catch((error) =>
+			pino.warn(error, "Error fetching profile data."),
+		);
 
 		if (!profileData) {
 			await interaction.editReply(`The RuneMetrics profile of \`${name}\` is not public.`);
