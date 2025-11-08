@@ -6,6 +6,7 @@ import {
 	TimestampStyles,
 } from "discord.js";
 import { hiScore, profile } from "runescape";
+import z from "zod";
 import Request from "../../models/Request.js";
 import UserData from "../../models/UserData.js";
 import pino from "../../pino.js";
@@ -13,12 +14,14 @@ import { QUEUE_CHAT_CHANNEL_ID } from "../../utility/configuration.js";
 import { type RequestCompletedStatusViaUser, RequestStatus } from "../../utility/constants.js";
 import { isRSN, time } from "../../utility/functions.js";
 
-interface FormatAutocompleteResponseValue {
-	id?: number;
-	userId?: Snowflake;
-}
+const autocompleteSchema = z.strictObject({
+	id: z.number().min(1).optional(),
+	userId: z.string().min(1).optional(),
+});
 
-function formatAutocompleteResponseValue({ id, userId }: FormatAutocompleteResponseValue) {
+type AutocompleteSchema = z.infer<typeof autocompleteSchema>;
+
+function formatAutocompleteResponseValue({ id, userId }: AutocompleteSchema) {
 	return JSON.stringify({ id, userId });
 }
 
@@ -294,13 +297,13 @@ export default {
 		});
 	},
 	async info(interaction: ChatInputCommandInteraction<"cached">) {
-		let id: FormatAutocompleteResponseValue["id"];
-		let userId: FormatAutocompleteResponseValue["userId"];
+		let id: AutocompleteSchema["id"];
+		let userId: AutocompleteSchema["userId"];
 
 		try {
-			({ id, userId } = JSON.parse(
-				interaction.options.getString("query", true),
-			) as FormatAutocompleteResponseValue);
+			({ id, userId } = autocompleteSchema.parse(
+				JSON.parse(interaction.options.getString("query", true)),
+			));
 		} catch {
 			await interaction.reply({
 				content: "Cannot parse request information.",
