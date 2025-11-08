@@ -1,3 +1,4 @@
+import { Buffer } from "node:buffer";
 import { clearTimeout, setTimeout } from "node:timers";
 import { URL } from "node:url";
 import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
@@ -948,9 +949,7 @@ export default class Request extends Base {
 
 		void this.client.log({
 			content,
-			files: [
-				{ attachment: Request.transcriptURL(this.id, transcriptHash), name: `${this.id}.txt` },
-			],
+			files: [{ attachment: Buffer.from(contents), name: `${this.id}.txt` }],
 			type: LogType.CorruptedEggQueue,
 		});
 
