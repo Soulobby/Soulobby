@@ -1,4 +1,5 @@
 import {
+	ComponentType,
 	DiscordAPIError,
 	Events,
 	type Interaction,
@@ -62,9 +63,12 @@ import type { Event } from "./index.js";
 const name = Events.InteractionCreate;
 
 const interactionErrorResponseBody = {
-	content: "An error was encountered. Rest easy, it's being tracked!",
-	components: [],
-	embeds: [],
+	components: [
+		{
+			type: ComponentType.TextDisplay,
+			content: "An error was encountered. Rest easy, it's being tracked!",
+		},
+	],
 	flags: MessageFlags.Ephemeral | MessageFlags.IsComponentsV2,
 } as const;
 
