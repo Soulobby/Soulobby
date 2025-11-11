@@ -22,6 +22,8 @@ jobs:
           access_key: ${{ secrets.S3_ACCESS_KEY_ID }}
           account_id: ${{ secrets.S3_ACCOUNT_ID }}
       - uses: superfly/flyctl-actions/setup-flyctl@master
+        with:
+          version: 0.3.209
       - name: Set filename
         id: set-filename
         run: echo "FILENAME=$(date -u +"%s").sql" >> "$GITHUB_OUTPUT"
