@@ -20,11 +20,9 @@ jobs:
       - uses: actions/checkout@v5
 
       - uses: superfly/flyctl-actions/setup-flyctl@master
-        with:
-          version: 0.3.209
 
       - run: |
-          flyctl secrets set --access-token $FLY_DEPLOY_TOKEN --stage SENTRY_RELEASE=${{ github.sha }}
-          flyctl deploy --remote-only --access-token $FLY_DEPLOY_TOKEN ${{ github.event.inputs.no-cache == 'true' && '--no-cache' || '' }}
+          flyctl secrets set --stage SENTRY_RELEASE=${{ github.sha }}
+          flyctl deploy --remote-only ${{ github.event.inputs.no-cache == 'true' && '--no-cache' || '' }}
         env:
-          FLY_DEPLOY_TOKEN: ${{ secrets.FLY_DEPLOY_TOKEN }}
+          FLY_API_TOKEN: ${{ secrets.FLY_DEPLOY_TOKEN }}
