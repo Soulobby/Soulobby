@@ -281,9 +281,9 @@ export default class Ignore extends Base {
 		return new EmbedBuilder()
 			.setColor((await this.client.guild.members.fetchMe()).displayColor)
 			.setDescription(
-				`Current RSN: \`${this.RSN}\`\nBanned: ${time(this.banTimestamp.getTime(), TimestampStyles.LongDateTime)}${
+				`Current RSN: \`${this.RSN}\`\nBanned: ${time(this.banTimestamp.getTime(), TimestampStyles.FullDateShortTime)}${
 					this.isUnbanned()
-						? `\nUnbanned: ${time(this.unbanTimestamp.getTime(), TimestampStyles.LongDateTime)}`
+						? `\nUnbanned: ${time(this.unbanTimestamp.getTime(), TimestampStyles.FullDateShortTime)}`
 						: ""
 				}`,
 			)

@@ -708,7 +708,7 @@ export class CorruptedEggCall extends Mixin(BaseCall, CorruptedEggLocation) {
 				{ name: "Location", value: CallLocationToString[location], inline: true },
 				{
 					name: "Date",
-					value: time(timestamp.getTime(), TimestampStyles.LongDateTime),
+					value: time(timestamp.getTime(), TimestampStyles.FullDateShortTime),
 					inline: true,
 				},
 			)

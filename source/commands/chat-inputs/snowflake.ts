@@ -38,7 +38,7 @@ export default {
 		const embed = new EmbedBuilder()
 			.setColor((await interaction.client.guild.members.fetchMe()).displayColor)
 			.setDescription(
-				`Created: ${time(snowflake.timestamp, TimestampStyles.LongDateTime, true)}\nTimestamp: \`${
+				`Created: ${time(snowflake.timestamp, TimestampStyles.FullDateShortTime, true)}\nTimestamp: \`${
 					snowflake.timestamp
 				}\``,
 			)

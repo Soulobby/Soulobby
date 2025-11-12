@@ -188,7 +188,7 @@ export default {
 				await interaction.reply({
 					content: `It has not yet been 3 days since the beginning of this request. This request can be closed for this reason at ${time(
 						request.creationTimestamp + 259_200_000,
-						TimestampStyles.LongDateTime,
+						TimestampStyles.FullDateShortTime,
 						true,
 					)}.`,
 					flags: MessageFlags.Ephemeral,
@@ -202,7 +202,7 @@ export default {
 			await interaction.reply({
 				content: `It has not yet been 1 week since the beginning of this request. This request can be closed for this reason at ${time(
 					request.creationTimestamp + 604_800_000,
-					TimestampStyles.LongDateTime,
+					TimestampStyles.FullDateShortTime,
 					true,
 				)}.`,
 				flags: MessageFlags.Ephemeral,

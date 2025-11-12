@@ -44,14 +44,14 @@ export async function memberLogSendJoinLeave(
 
 	let description = `${user.flags.has(UserFlags.Spammer) ? "⚠️ `SPAMMER`\n" : ""}${
 		user.flags.has(UserFlags.Quarantined) ? "⚠️ `QUARANTINED`\n" : ""
-	}User: ${user} (${user.tag})\nCreated: ${time(user.createdTimestamp, TimestampStyles.LongDateTime, true)}`;
+	}User: ${user} (${user.tag})\nCreated: ${time(user.createdTimestamp, TimestampStyles.FullDateShortTime, true)}`;
 
 	if (guildMember.joinedTimestamp) {
-		description += `\nJoined: ${time(guildMember.joinedTimestamp, TimestampStyles.LongDateTime, true)}`;
+		description += `\nJoined: ${time(guildMember.joinedTimestamp, TimestampStyles.FullDateShortTime, true)}`;
 	}
 
 	if (join === false) {
-		description += `\nLeft: ${time(Date.now(), TimestampStyles.LongDateTime, true)}`;
+		description += `\nLeft: ${time(Date.now(), TimestampStyles.FullDateShortTime, true)}`;
 	}
 
 	const embed = new EmbedBuilder()

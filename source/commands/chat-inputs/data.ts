@@ -106,7 +106,7 @@ export default {
 			.setFields(
 				friend.history.map(({ rank, date }) => ({
 					name: rank,
-					value: date ? time(date, TimestampStyles.LongDateTime) : "Unknown",
+					value: date ? time(date, TimestampStyles.FullDateShortTime) : "Unknown",
 				})),
 			)
 			.setThumbnail(avatar({ name: friend.RSN }))

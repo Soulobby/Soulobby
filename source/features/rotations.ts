@@ -381,7 +381,7 @@ export async function scheduleResetModalSubmit(
 		return;
 	}
 
-	const timestampMarkdown = time(resetTimestamp, TimestampStyles.ShortDateTime, true);
+	const timestampMarkdown = time(resetTimestamp, TimestampStyles.LongDateShortTime, true);
 
 	void interaction.client.log({
 		content: `${interaction.user} (${interaction.user.tag}) scheduled a reset of the rotations for ${timestampMarkdown}.`,

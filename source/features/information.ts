@@ -94,7 +94,7 @@ export async function information(
 
 	const displayingText = `Displaying the profile of ${user}.`;
 	const userIdText = `Id: \`${user.id}\``;
-	const userCreationDateText = `Created: ${time(user.createdTimestamp, TimestampStyles.LongDateTime, true)}`;
+	const userCreationDateText = `Created: ${time(user.createdTimestamp, TimestampStyles.FullDateShortTime, true)}`;
 	let guildMemberJoinedTimestampText = "";
 	let guildMemberPremiumSinceTimestampText = "";
 
@@ -102,12 +102,12 @@ export async function information(
 		guildMemberJoinedTimestampText =
 			guildMember.joinedTimestamp === null
 				? ""
-				: `\nJoined Server: ${time(guildMember.joinedTimestamp, TimestampStyles.LongDateTime, true)}`;
+				: `\nJoined Server: ${time(guildMember.joinedTimestamp, TimestampStyles.FullDateShortTime, true)}`;
 
 		guildMemberPremiumSinceTimestampText =
 			guildMember.premiumSinceTimestamp === null
 				? ""
-				: `\nServer Boosting: ${time(guildMember.premiumSinceTimestamp, TimestampStyles.LongDateTime, true)}`;
+				: `\nServer Boosting: ${time(guildMember.premiumSinceTimestamp, TimestampStyles.FullDateShortTime, true)}`;
 	}
 
 	// Default avatar icons do not have a question mark.

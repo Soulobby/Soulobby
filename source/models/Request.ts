@@ -653,8 +653,8 @@ export default class Request extends Base {
 		if (this.completionTimestamp !== data.completion_timestamp) {
 			editMessage += `\nCompletion timestamp altered from ${time(
 				this.completionTimestamp!.getTime(),
-				TimestampStyles.LongDateTime,
-			)} to ${time(data.completion_timestamp!.getTime(), TimestampStyles.LongDateTime)}.`;
+				TimestampStyles.FullDateShortTime,
+			)} to ${time(data.completion_timestamp!.getTime(), TimestampStyles.FullDateShortTime)}.`;
 		}
 
 		const logMessage = `${interaction.user} (${
@@ -1041,7 +1041,7 @@ export default class Request extends Base {
 			);
 
 		const textDisplay = new TextDisplayBuilder().setContent(
-			`**Status:** ${this.status}\n**Channel:** ${channelMention(this.channelId)}\n**Creation Date:** ${time(this.creationTimestamp, TimestampStyles.ShortDateTime)}\n**Completion Date:** ${this.completionTimestamp === null ? "Not set yet" : time(this.completionTimestamp.getTime(), TimestampStyles.ShortDateTime)}\n**Duration:** ${this.duration}`,
+			`**Status:** ${this.status}\n**Channel:** ${channelMention(this.channelId)}\n**Creation Date:** ${time(this.creationTimestamp, TimestampStyles.LongDateShortTime)}\n**Completion Date:** ${this.completionTimestamp === null ? "Not set yet" : time(this.completionTimestamp.getTime(), TimestampStyles.LongDateShortTime)}\n**Duration:** ${this.duration}`,
 		);
 
 		if (transcript) {
@@ -1116,7 +1116,7 @@ export default class Request extends Base {
 						)
 						.addTextDisplayComponents((textDisplay) =>
 							textDisplay.setContent(
-								`### Request ${request.id}\n\n**Status:** ${request.status}\n**Channel:** ${channelMention(request.channelId)}\n**Creation Date:** ${time(request.creationTimestamp, TimestampStyles.ShortDateTime)}\n**Completion Date:** ${request.completionTimestamp === null ? "Not set yet" : time(request.completionTimestamp.getTime(), TimestampStyles.ShortDateTime)}\n**Duration:** ${request.duration}`,
+								`### Request ${request.id}\n\n**Status:** ${request.status}\n**Channel:** ${channelMention(request.channelId)}\n**Creation Date:** ${time(request.creationTimestamp, TimestampStyles.LongDateShortTime)}\n**Completion Date:** ${request.completionTimestamp === null ? "Not set yet" : time(request.completionTimestamp.getTime(), TimestampStyles.LongDateShortTime)}\n**Duration:** ${request.duration}`,
 							),
 						),
 				);
