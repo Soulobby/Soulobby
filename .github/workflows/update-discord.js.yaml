@@ -19,7 +19,7 @@ jobs:
           repositories: Soulobby
           permission-contents: write
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           token: ${{ steps.create-token.outputs.token }}
 
