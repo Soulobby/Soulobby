@@ -1,6 +1,5 @@
 import ban from "./chat-inputs/ban.js";
 import case_chat_input from "./chat-inputs/case.js";
-import clan from "./chat-inputs/clan.js";
 import custom_status from "./chat-inputs/custom-status.js";
 import data from "./chat-inputs/data.js";
 import egg from "./chat-inputs/egg.js";
@@ -22,7 +21,6 @@ import user_info from "./user-context-menus/user-info.js";
 export const CHAT_INPUT_COMMANDS = [
 	ban,
 	case_chat_input,
-	clan,
 	custom_status,
 	data,
 	egg,
