@@ -32,7 +32,7 @@ export default {
 		}
 
 		// Handle affiliate edits.
-		if (newMessage.channelId === RAW_AFFILIATES_CHANNEL_ID) {
+		if (newMessage.channelId === RAW_AFFILIATES_CHANNEL_ID && newMessage.author.bot) {
 			await affiliates({ client: newMessage.client });
 			return;
 		}
