@@ -3,7 +3,6 @@ import {
 	type ChatInputCommandInteraction,
 	type Client,
 	ContainerBuilder,
-	FormattingPatterns,
 	formatEmoji,
 	MessageFlags,
 	SeparatorSpacingSize,
@@ -12,6 +11,8 @@ import {
 } from "discord.js";
 import { AFFILIATES_CHANNEL_ID, RAW_AFFILIATES_CHANNEL_ID } from "../utility/configuration.js";
 import { EMOJIS } from "../utility/emojis.js";
+
+const USER_ID_REGULAR_EXPRESSION = /(?<id>[1-9]\d{16,18})/g;
 
 interface AffiliatesCommandOptions {
 	interaction: ChatInputCommandInteraction<"cached">;
@@ -68,7 +69,7 @@ export async function affiliates(options: AffiliatesOptions) {
 			}
 
 			if (field.name === "__Contact__") {
-				for (const match of field.value.matchAll(FormattingPatterns.User)) {
+				for (const match of field.value.matchAll(USER_ID_REGULAR_EXPRESSION)) {
 					contacts.push(`<@${(match.groups as { id: Snowflake }).id}>`);
 				}
 			}
