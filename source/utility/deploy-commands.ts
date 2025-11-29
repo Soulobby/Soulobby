@@ -40,6 +40,13 @@ const rankChoices = RANK_VALUES.map((rank) => ({ name: rank, value: rank }));
 
 const COMMANDS: RESTPostAPIApplicationCommandsJSONBody[] = [
 	{
+		name: "affiliates",
+		description: "Updates the affiliates.",
+		type: ApplicationCommandType.ChatInput,
+		integration_types: [ApplicationIntegrationType.GuildInstall],
+		contexts: [InteractionContextType.Guild],
+	},
+	{
 		name: "ban",
 		description: "Ban an account.",
 		type: ApplicationCommandType.ChatInput,

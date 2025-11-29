@@ -1,9 +1,10 @@
 import { Events, PermissionFlagsBits } from "discord.js";
 import { findCallByMessageId } from "../caches/calls.js";
+import { affiliates } from "../features/affiliates.js";
 import { messageLogHandleMessageUpdate } from "../features/message-log.js";
 import { updateCall } from "../models/Calls.js";
 import pino from "../pino.js";
-import { CALLS_CHANNEL_ID, GUILD_ID } from "../utility/configuration.js";
+import { CALLS_CHANNEL_ID, GUILD_ID, RAW_AFFILIATES_CHANNEL_ID } from "../utility/configuration.js";
 import { shouldLogMessage } from "../utility/functions.js";
 import type { Event } from "./index.js";
 
@@ -28,6 +29,12 @@ export default {
 			} catch (error) {
 				pino.error(error, "Failed to log message update.");
 			}
+		}
+
+		// Handle affiliate edits.
+		if (newMessage.channelId === RAW_AFFILIATES_CHANNEL_ID) {
+			await affiliates({ client: newMessage.client });
+			return;
 		}
 
 		const calls = newMessage.client.channel(CALLS_CHANNEL_ID);

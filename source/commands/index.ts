@@ -1,3 +1,4 @@
+import affiliates from "./chat-inputs/affiliates.js";
 import ban from "./chat-inputs/ban.js";
 import case_chat_input from "./chat-inputs/case.js";
 import custom_status from "./chat-inputs/custom-status.js";
@@ -19,6 +20,7 @@ import request_info from "./user-context-menus/request-info.js";
 import user_info from "./user-context-menus/user-info.js";
 
 export const CHAT_INPUT_COMMANDS = [
+	affiliates,
 	ban,
 	case_chat_input,
 	custom_status,
