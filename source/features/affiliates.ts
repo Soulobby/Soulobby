@@ -77,7 +77,7 @@ export async function affiliates(options: AffiliatesOptions) {
 
 		if (url) {
 			textDisplayTop.push(
-				new TextDisplayBuilder().setContent(`${formatEmoji(EMOJIS.Discord)} **Disocrd:** ${url}`),
+				new TextDisplayBuilder().setContent(`${formatEmoji(EMOJIS.Discord)} **Discord:** ${url}`),
 			);
 		}
 
