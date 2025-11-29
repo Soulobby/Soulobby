@@ -56,7 +56,7 @@ export async function affiliates(options: AffiliatesOptions) {
 			new TextDisplayBuilder().setContent(`## ${title}`),
 		];
 
-		const contacts: Snowflake[] = [];
+		const contacts: `- <@${Snowflake}>`[] = [];
 
 		for (const field of fields) {
 			// Deep Sea Fishing has the possession mistake.
@@ -70,7 +70,7 @@ export async function affiliates(options: AffiliatesOptions) {
 
 			if (field.name === "__Contact__") {
 				for (const match of field.value.matchAll(USER_ID_REGULAR_EXPRESSION)) {
-					contacts.push(`<@${(match.groups as { id: Snowflake }).id}>`);
+					contacts.push(`- <@${(match.groups as { id: Snowflake }).id}>`);
 				}
 			}
 		}
