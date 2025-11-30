@@ -20,6 +20,7 @@ import {
 	TextInputStyle,
 	TimestampStyles,
 	type User,
+	userMention,
 } from "discord.js";
 import { Item, Jewel, jewel, stock } from "runescape";
 import pg, { Table } from "../pg.js";
@@ -60,15 +61,8 @@ interface RotationsPacket {
 	last_updated_at: Date;
 	scheduled_reset_timestamp: Date | null;
 	scheduled_reset_message_id: Snowflake | null;
-}
-
-interface RotationUpdateOptions {
-	actor: User;
-	aminishiGemTrader?: P2PEnglishServers | -1 | null;
-	gullibleTourist?: P2PEnglishServers[] | -1 | null;
-	riddlerCrab?: P2PEnglishServers | -1 | null;
-	tuaiLeitGemTrader?: P2PEnglishServers | -1 | null;
-	timestamp?: Date;
+	scheduled_reset_user_id: Snowflake | null;
+	last_updated_by: Snowflake;
 }
 
 export const OVERVIEW_SCHEDULE_RESET_NOW_CUSTOM_ID =
@@ -404,8 +398,9 @@ export async function scheduleResetModalSubmit(
 	});
 
 	await pg<RotationsPacket>(Table.Rotations).update({
-		scheduled_reset_message_id: response.resource!.message!.id,
 		scheduled_reset_timestamp: resetDate,
+		scheduled_reset_message_id: response.resource!.message!.id,
+		scheduled_reset_user_id: interaction.user.id,
 	});
 
 	scheduledResetTimeout = setTimeout(
@@ -414,7 +409,7 @@ export async function scheduleResetModalSubmit(
 	);
 }
 
-async function resetRotations(client: Client<true>) {
+async function resetRotations(client: Client<true>, lastUpdatedBy: Snowflake) {
 	const [rotation] = await pg<RotationsPacket>(Table.Rotations).update(
 		{
 			aminishi_gem_trader: null,
@@ -422,6 +417,10 @@ async function resetRotations(client: Client<true>) {
 			riddler_crab: null,
 			tuai_leit_gem_trader: null,
 			last_updated_at: new Date(),
+			scheduled_reset_timestamp: null,
+			scheduled_reset_message_id: null,
+			scheduled_reset_user_id: null,
+			last_updated_by: lastUpdatedBy,
 		},
 		"*",
 	);
@@ -429,11 +428,18 @@ async function resetRotations(client: Client<true>) {
 	await client
 		.channel(OVERVIEW_CHANNEL_ID, ChannelType.GuildText)
 		.messages.edit(OVERVIEW1_MESSAGE_ID, {
+			allowedMentions: { parse: [] },
 			components: [await overviewComponents(client, transformOverview(rotation))],
 			flags: MessageFlags.IsComponentsV2,
 		});
+}
 
-	return transformOverview(rotation);
+interface RotationUpdateOptions {
+	actor: User;
+	aminishiGemTrader?: P2PEnglishServers | -1 | null;
+	gullibleTourist?: P2PEnglishServers[] | -1 | null;
+	riddlerCrab?: P2PEnglishServers | -1 | null;
+	tuaiLeitGemTrader?: P2PEnglishServers | -1 | null;
 }
 
 async function updateRotations(
@@ -455,6 +461,7 @@ async function updateRotations(
 			riddler_crab: riddlerCrab,
 			tuai_leit_gem_trader: tuaiLeitGemTrader,
 			last_updated_at: new Date(),
+			last_updated_by: actor.id,
 		},
 		"*",
 	);
@@ -476,27 +483,14 @@ async function updateRotations(
 	await client
 		.channel(OVERVIEW_CHANNEL_ID, ChannelType.GuildText)
 		.messages.edit(OVERVIEW1_MESSAGE_ID, {
+			allowedMentions: { parse: [] },
 			components: [await overviewComponents(client, transformOverview(updatedRotation))],
 			flags: MessageFlags.IsComponentsV2,
 		});
 }
 
 export async function dailyReset(client: Client<true>) {
-	const overview = await resetRotations(client);
-
-	await client
-		.channel(OVERVIEW_CHANNEL_ID, ChannelType.GuildText)
-		.messages.edit(OVERVIEW1_MESSAGE_ID, {
-			components: [await overviewComponents(client, overview)],
-			flags: MessageFlags.IsComponentsV2,
-		});
-
-	await pg<RotationsPacket>(Table.Rotations)
-		.update({
-			scheduled_reset_message_id: null,
-			scheduled_reset_timestamp: null,
-		})
-		.returning(["aminishi_gem_trader", "gullible_tourist", "riddler_crab", "tuai_leit_gem_trader"]);
+	await resetRotations(client, client.user.id);
 
 	if (scheduledResetTimeout) {
 		clearTimeout(scheduledResetTimeout);
@@ -537,13 +531,6 @@ export async function dailyReset(client: Client<true>) {
 				? `${roleMention(DailyCatToRoleId[currentCat])} has spawned in Menaphos.`
 				: `${roleMention(DailyCatToRoleId[currentCat])} is roaming!`,
 	);
-
-	await client
-		.channel(OVERVIEW_CHANNEL_ID, ChannelType.GuildText)
-		.messages.edit(OVERVIEW1_MESSAGE_ID, {
-			components: [await overviewComponents(client, overview)],
-			flags: MessageFlags.IsComponentsV2,
-		});
 }
 
 export async function scheduledResetNow(interaction: ButtonInteraction<"cached">) {
@@ -565,8 +552,9 @@ export async function scheduledResetCancel(interaction: ButtonInteraction<"cache
 	});
 
 	await pg<RotationsPacket>(Table.Rotations).update({
-		scheduled_reset_message_id: null,
 		scheduled_reset_timestamp: null,
+		scheduled_reset_message_id: null,
+		scheduled_reset_user_id: null,
 	});
 
 	if (scheduledResetTimeout) {
@@ -589,12 +577,7 @@ async function scheduledResetOperations(client: Client<true>) {
 		.channel(OVERVIEW_CHANNEL_ID, ChannelType.GuildText)
 		.messages.delete(rotationsPacket.scheduled_reset_message_id!);
 
-	await resetRotations(client);
-
-	await pg<RotationsPacket>(Table.Rotations).update({
-		scheduled_reset_message_id: null,
-		scheduled_reset_timestamp: null,
-	});
+	await resetRotations(client, rotationsPacket.scheduled_reset_user_id!);
 
 	if (scheduledResetTimeout) {
 		clearTimeout(scheduledResetTimeout);
@@ -611,6 +594,7 @@ async function overviewComponents(
 		| "riddler_crab"
 		| "tuai_leit_gem_trader"
 		| "last_updated_at"
+		| "last_updated_by"
 	>,
 ) {
 	const now = Date.now();
@@ -685,10 +669,14 @@ async function overviewComponents(
 					secondaryButton.setCustomId(OVERVIEW_SCHEDULE_RESET_CUSTOM_ID).setLabel("Schedule Reset"),
 				),
 		)
-		.addSeparatorComponents((separator) =>
-			separator.setDivider(true).setSpacing(SeparatorSpacingSize.Small),
+		.addTextDisplayComponents((textDisplay) =>
+			textDisplay.setContent(
+				`-# Last updated by ${userMention(rotationsPacket.last_updated_by)} at ${Intl.DateTimeFormat(Locale.EnglishGB, { timeStyle: "short" }).format(rotationsPacket.last_updated_at)} (${time(rotationsPacket.last_updated_at.getTime(), TimestampStyles.RelativeTime)})`,
+			),
 		)
-
+		.addSeparatorComponents((separator) =>
+			separator.setDivider().setSpacing(SeparatorSpacingSize.Small),
+		)
 		.addSectionComponents((section) =>
 			section
 				.setLinkButtonAccessory((linkButton) =>
@@ -701,7 +689,7 @@ async function overviewComponents(
 				),
 		)
 		.addSeparatorComponents((separator) =>
-			separator.setDivider(true).setSpacing(SeparatorSpacingSize.Small),
+			separator.setDivider().setSpacing(SeparatorSpacingSize.Small),
 		)
 		.addSectionComponents((section) =>
 			section
@@ -715,7 +703,7 @@ async function overviewComponents(
 				),
 		)
 		.addSeparatorComponents((separator) =>
-			separator.setDivider(true).setSpacing(SeparatorSpacingSize.Small),
+			separator.setDivider().setSpacing(SeparatorSpacingSize.Small),
 		)
 		.addSectionComponents((section) =>
 			section
@@ -727,14 +715,6 @@ async function overviewComponents(
 						`### Travelling merchant\n\nToday: **${stockTodayEmojis.length > 0 ? `${stockTodayEmojis.join(" ")} Available!` : "Unavailable"}**\n-# Next Menaphite gift offering: ${nextMenaphiteGiftOffering}`,
 					),
 				),
-		)
-		.addSeparatorComponents((separator) =>
-			separator.setDivider(true).setSpacing(SeparatorSpacingSize.Small),
-		)
-		.addTextDisplayComponents((textDisplay) =>
-			textDisplay.setContent(
-				`-# Last updated: ${Intl.DateTimeFormat(Locale.EnglishGB, { timeStyle: "short" }).format(rotationsPacket.last_updated_at)} (${time(rotationsPacket.last_updated_at.getTime(), TimestampStyles.RelativeTime)})`,
-			),
 		);
 }
 
