@@ -1,6 +1,10 @@
 {
 	"$schema": "node_modules/knip/schema.json",
-	"entry": "source/sentry.ts",
-	"ignoreBinaries": ["nc"],
-	"ignoreDependencies": ["pg"]
+	"ignoreBinaries": ["biome", "nc"],
+	"ignoreDependencies": ["pg"],
+	"workspaces": {
+		"apps/*": {
+			"entry": "source/sentry.ts"
+		}
+	}
 }

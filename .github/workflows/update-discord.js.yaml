@@ -3,11 +3,11 @@ on:
   schedule:
     - cron: "30 */12 * * *"
   workflow_dispatch:
+permissions: {}
 jobs:
   update:
     name: Update discord.js
     runs-on: ubuntu-latest
-    permissions: {}
     steps:
       - name: Create token
         id: create-token
@@ -36,7 +36,7 @@ jobs:
         run: pnpm install
 
       - name: Update discord.js
-        run: pnpm update discord.js
+        run: pnpm --filter=soulobby update discord.js
 
       - name: Update files
         run: |
