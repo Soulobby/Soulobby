@@ -1,7 +1,6 @@
 import process from "node:process";
 import {
 	type AttachmentBuilder,
-	type AttachmentPayload,
 	ChannelType,
 	Client,
 	type EmbedBuilder,
@@ -10,6 +9,7 @@ import {
 	type GuildBasedChannel,
 	type GuildChannelTypes,
 	type MappedGuildChannelTypes,
+	MessageBuilder,
 	Options,
 	Partials,
 	PermissionFlagsBits,
@@ -40,7 +40,7 @@ interface LogOptions {
 	content?: string;
 	embeds?: EmbedBuilder[];
 	error?: unknown;
-	files?: (AttachmentPayload | AttachmentBuilder | string)[];
+	files?: AttachmentBuilder[];
 	type?: LogType;
 }
 
@@ -52,7 +52,7 @@ declare module "discord.js" {
 			type?: T,
 		): Exclude<GuildBasedChannel, ThreadChannel>;
 		get guild(): Guild;
-		log(options: LogOptions | string): Promise<Message>;
+		log(options: LogOptions | string): Promise<void>;
 	}
 }
 
@@ -142,15 +142,16 @@ class Soulobby<Ready extends boolean = boolean> extends Client<Ready> {
 		}
 
 		stamp = `\`[${stamp}]\``;
+		const message = new MessageBuilder()
+			.setAllowedMentions({})
+			.setEmbeds(embeds)
+			.setAttachments(files);
 
-		const message = await channel.send({
-			allowedMentions: { parse: [] },
-			content: content ? `${stamp} ${content}` : undefined,
-			embeds,
-			files,
-		});
+		if (content) {
+			message.setContent(`${stamp} ${content}`);
+		}
 
-		return message;
+		await channel.send(message);
 	}
 }
 

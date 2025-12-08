@@ -4,6 +4,7 @@ import { URL } from "node:url";
 import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import {
 	ActionRowBuilder,
+	AttachmentBuilder,
 	type ButtonInteraction,
 	ChannelType,
 	type ChatInputCommandInteraction,
@@ -949,7 +950,12 @@ export default class Request extends Base {
 
 		void this.client.log({
 			content,
-			files: [{ attachment: Buffer.from(contents), name: `${this.id}.txt` }],
+			files: [
+				new AttachmentBuilder()
+					.setId(0)
+					.setFilename(`${this.id}.txt`)
+					.setFileData(Buffer.from(contents)),
+			],
 			type: LogType.CorruptedEggQueue,
 		});
 

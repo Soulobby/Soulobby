@@ -1,5 +1,5 @@
+import { Buffer } from "node:buffer";
 import {
-	AttachmentBuilder,
 	type ChatInputCommandInteraction,
 	EmbedBuilder,
 	formatEmoji,
@@ -116,28 +116,6 @@ export async function information(
 	const footerAvatar = displayAvatarURL(interaction.member);
 	const banner = user.bannerURL({ extension: "webp", size: 4_096 });
 	const thumbnailAvatar = perServerAvatar ?? userAvatar;
-
-	const files = [
-		new AttachmentBuilder(footerAvatar, {
-			name: `${interaction.user.id}_footer.${footerAvatar.slice(
-				footerAvatar.lastIndexOf(".") + 1,
-				footerAvatar.includes("?") ? footerAvatar.indexOf("?") : footerAvatar.length,
-			)}`,
-		}),
-		new AttachmentBuilder(thumbnailAvatar, {
-			name: `${user.id}_thumbnail.${thumbnailAvatar.slice(
-				thumbnailAvatar.lastIndexOf(".") + 1,
-				thumbnailAvatar.includes("?") ? thumbnailAvatar.indexOf("?") : thumbnailAvatar.length,
-			)}`,
-		}),
-		new AttachmentBuilder(userAvatar, {
-			name: `${user.id}_user.${userAvatar.slice(
-				userAvatar.lastIndexOf(".") + 1,
-				userAvatar.includes("?") ? userAvatar.indexOf("?") : userAvatar.length,
-			)}`,
-		}),
-	];
-
 	const tick = formatEmoji(EMOJIS.Tick);
 	const cross = formatEmoji(EMOJIS.Cross);
 
@@ -213,18 +191,50 @@ export async function information(
 		});
 	}
 
-	if (banner) {
+	const [footerAvatarData, thumbnailAvatarData, userAvatarData, bannerData] = await Promise.all([
+		fetch(footerAvatar).then(async (response) => Buffer.from(await response.arrayBuffer())),
+		fetch(thumbnailAvatar).then(async (response) => Buffer.from(await response.arrayBuffer())),
+		fetch(userAvatar).then(async (response) => Buffer.from(await response.arrayBuffer())),
+		banner
+			? fetch(banner).then(async (response) => Buffer.from(await response.arrayBuffer()))
+			: null,
+	]);
+
+	const files = [
+		{
+			name: `${interaction.user.id}_footer.${footerAvatar.slice(
+				footerAvatar.lastIndexOf(".") + 1,
+				footerAvatar.includes("?") ? footerAvatar.indexOf("?") : footerAvatar.length,
+			)}`,
+			attachment: footerAvatarData,
+		},
+		{
+			name: `${user.id}_thumbnail.${thumbnailAvatar.slice(
+				thumbnailAvatar.lastIndexOf(".") + 1,
+				thumbnailAvatar.includes("?") ? thumbnailAvatar.indexOf("?") : thumbnailAvatar.length,
+			)}`,
+			attachment: thumbnailAvatarData,
+		},
+		{
+			name: `${user.id}_user.${userAvatar.slice(
+				userAvatar.lastIndexOf(".") + 1,
+				userAvatar.includes("?") ? userAvatar.indexOf("?") : userAvatar.length,
+			)}`,
+			attachment: userAvatarData,
+		},
+	];
+
+	if (banner && bannerData) {
 		embed
 			.addFields({ name: "Banner URL", value: `[Banner URL](${banner})`, inline: true })
 			.setImage(
 				`attachment://${user.id}_banner.${banner.slice(banner.lastIndexOf(".") + 1, banner.indexOf("?"))}`,
 			);
 
-		files.push(
-			new AttachmentBuilder(banner, {
-				name: `${user.id}_banner.${banner.slice(banner.lastIndexOf(".") + 1, banner.indexOf("?"))}`,
-			}),
-		);
+		files.push({
+			name: `${user.id}_banner.${banner.slice(banner.lastIndexOf(".") + 1, banner.indexOf("?"))}`,
+			attachment: bannerData,
+		});
 	}
 
 	await interaction.editReply({ embeds: [embed], files });
