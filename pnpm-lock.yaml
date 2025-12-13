@@ -29,7 +29,7 @@ importers:
         version: 8.0.2
       discord.js:
         specifier: dev
-        version: 15.0.0-dev.1765454516-df0c28afc
+        version: 15.0.0-dev.1765584117-c4fc79a3c
       hasha:
         specifier: ^7.0.0
         version: 7.0.0
@@ -301,28 +301,28 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@discordjs/builders@2.0.0-dev.1765454516-df0c28afc':
-    resolution: {integrity: sha512-a7CJO/tbndZ2y/dhImtPpYQdfaA1ziOY4L0weQq90ZdbgBf1kdx0nFChf++iXKu4+1QhV25kVQa+czol4a5gtw==}
+  '@discordjs/builders@2.0.0-dev.1765584117-c4fc79a3c':
+    resolution: {integrity: sha512-dNjvxz+kO5XyXIZeS9OVO12o33C8pxm3SyA6CIgI9ECbxkLRFrjAlKZo7hUewuwoi/2VXngU8DNGhsXKaQQIEg==}
     engines: {node: '>=22.12.0'}
 
-  '@discordjs/collection@3.0.0-dev.1765454516-df0c28afc':
-    resolution: {integrity: sha512-dek7NiSu3WEMnrmymlNi8IeQ9Z8K7uzAxwX1Zssvk/Nie/1pKVnOzr4DvxilQfz9yVfRsZ8Xt4OXnUL3jJFbrw==}
+  '@discordjs/collection@3.0.0-dev.1765584117-c4fc79a3c':
+    resolution: {integrity: sha512-GilvHa6nCMLH/wx3Kz0ys8Aq+D+atQASfCHdPOVlkQU+Lx7ZfE9twEeddKsZq9mADj5uIXRtizlTgcAXNqbtyA==}
     engines: {node: '>=22.12.0'}
 
-  '@discordjs/formatters@1.0.0-dev.1765454516-df0c28afc':
-    resolution: {integrity: sha512-ZGWdETYdS+C466fUZEuiKeQjZUSMbh8hhxEvEkWvzbIL3czrOPEsg4ThffTJ5bkrG78D/tqJYpCuhFZ/yUIDEw==}
+  '@discordjs/formatters@1.0.0-dev.1765584117-c4fc79a3c':
+    resolution: {integrity: sha512-b13tflBxgLXYEKbSF6A7knWTPPut7c4aKXO2tJYb6GW7WjbNCWdWoF1+7lnmGO5OB8HwCLo42JMiINhhV8FIzA==}
     engines: {node: '>=22.12.0'}
 
-  '@discordjs/rest@3.0.0-dev.1765454516-df0c28afc':
-    resolution: {integrity: sha512-tmXJ5UnVs+s/JZ3Yj8Sgok43k6pFssIPS5LAWXsFgw66hJcCCvVCzmmklypMwhV7kVdYOnWcxq6PIxR2r8tNew==}
+  '@discordjs/rest@3.0.0-dev.1765584117-c4fc79a3c':
+    resolution: {integrity: sha512-43LmjfOD38iDG+Id+DzNijst8TS3EBisarn5vI7JVBrfkh4ybCMAK+fwYkpuTbIrSNI1xhGyKaF8V72FnenVpw==}
     engines: {node: '>=22.12.0'}
 
-  '@discordjs/util@2.0.0-dev.1765454516-df0c28afc':
-    resolution: {integrity: sha512-D+ucbMphdmtNYN9aUsQCByFkLILWQ1ieX0XF/CbzaEO6b4uMJr74wWgMFi+XK8PxVyFvKahgvjPcY8uhAPg24Q==}
+  '@discordjs/util@2.0.0-dev.1765584117-c4fc79a3c':
+    resolution: {integrity: sha512-n8SmZKwosYW4Rc4Q4JVkMXO+tSfmW/NieGSEWGyxspa7vyR+nhyLr9WWv90nS5w3oknTSGzNoneILtG8dg5GCA==}
     engines: {node: '>=22.12.0'}
 
-  '@discordjs/ws@3.0.0-dev.1765454516-df0c28afc':
-    resolution: {integrity: sha512-nvyeR44dAEgecQsjjZxfeuY1d/4sBHoU7ulJ842RxBeANJk/n65F4lVire/ehOZkesInYkbMqW63L+/66cOEvg==}
+  '@discordjs/ws@3.0.0-dev.1765584117-c4fc79a3c':
+    resolution: {integrity: sha512-Q9yXXpUjq3fbTfr/wApcBdaMqd6UL7EtH8kb6U1HOiVk1KGroj5YtClqBTc2wd/zGT/x4JbtF5cpUZefX0FNPg==}
     engines: {node: '>=22.12.0'}
 
   '@emnapi/core@1.7.1':
@@ -1320,8 +1320,8 @@ packages:
   discord-api-types@0.38.36:
     resolution: {integrity: sha512-qrbUbjjwtyeBg5HsAlm1C859epfOyiLjPqAOzkdWlCNsZCWJrertnETF/NwM8H+waMFU58xGSc5eXUfXah+WTQ==}
 
-  discord.js@15.0.0-dev.1765454516-df0c28afc:
-    resolution: {integrity: sha512-6Q+Z79vb2XoKFjHT/AEX4+7Gyc3AGsYAii/tWNaDGQN7t/Fqlj5Krh1CGYsUO8Ej5LzjHtkb+tyFTQUOVSO5sA==}
+  discord.js@15.0.0-dev.1765584117-c4fc79a3c:
+    resolution: {integrity: sha512-v0mFPhGykjGbi77EtrU8NpQ1SQwyQm8lowVcPRZRORKtWdoFS70Gyz4d19FLcLscnT1Odkb/8Jl3qMI9arkoGA==}
     engines: {node: '>=22.12.0'}
 
   end-of-stream@1.4.5:
@@ -2289,24 +2289,24 @@ snapshots:
   '@biomejs/cli-win32-x64@2.3.5':
     optional: true
 
-  '@discordjs/builders@2.0.0-dev.1765454516-df0c28afc':
+  '@discordjs/builders@2.0.0-dev.1765584117-c4fc79a3c':
     dependencies:
-      '@discordjs/util': 2.0.0-dev.1765454516-df0c28afc
+      '@discordjs/util': 2.0.0-dev.1765584117-c4fc79a3c
       discord-api-types: 0.38.36
       ts-mixer: 6.0.4
       tslib: 2.8.1
       zod: 4.1.13
 
-  '@discordjs/collection@3.0.0-dev.1765454516-df0c28afc': {}
+  '@discordjs/collection@3.0.0-dev.1765584117-c4fc79a3c': {}
 
-  '@discordjs/formatters@1.0.0-dev.1765454516-df0c28afc':
+  '@discordjs/formatters@1.0.0-dev.1765584117-c4fc79a3c':
     dependencies:
       discord-api-types: 0.38.36
 
-  '@discordjs/rest@3.0.0-dev.1765454516-df0c28afc':
+  '@discordjs/rest@3.0.0-dev.1765584117-c4fc79a3c':
     dependencies:
-      '@discordjs/collection': 3.0.0-dev.1765454516-df0c28afc
-      '@discordjs/util': 2.0.0-dev.1765454516-df0c28afc
+      '@discordjs/collection': 3.0.0-dev.1765584117-c4fc79a3c
+      '@discordjs/util': 2.0.0-dev.1765584117-c4fc79a3c
       '@sapphire/async-queue': 1.5.5
       '@sapphire/snowflake': 3.5.5
       '@vladfrangu/async_event_emitter': 2.4.7
@@ -2316,14 +2316,14 @@ snapshots:
       undici: 7.16.0
       uuid: 13.0.0
 
-  '@discordjs/util@2.0.0-dev.1765454516-df0c28afc':
+  '@discordjs/util@2.0.0-dev.1765584117-c4fc79a3c':
     dependencies:
       discord-api-types: 0.38.36
 
-  '@discordjs/ws@3.0.0-dev.1765454516-df0c28afc':
+  '@discordjs/ws@3.0.0-dev.1765584117-c4fc79a3c':
     dependencies:
-      '@discordjs/collection': 3.0.0-dev.1765454516-df0c28afc
-      '@discordjs/util': 2.0.0-dev.1765454516-df0c28afc
+      '@discordjs/collection': 3.0.0-dev.1765584117-c4fc79a3c
+      '@discordjs/util': 2.0.0-dev.1765584117-c4fc79a3c
       '@sapphire/async-queue': 1.5.5
       '@types/ws': 8.18.1
       '@vladfrangu/async_event_emitter': 2.4.7
@@ -3340,14 +3340,14 @@ snapshots:
 
   discord-api-types@0.38.36: {}
 
-  discord.js@15.0.0-dev.1765454516-df0c28afc:
+  discord.js@15.0.0-dev.1765584117-c4fc79a3c:
     dependencies:
-      '@discordjs/builders': 2.0.0-dev.1765454516-df0c28afc
-      '@discordjs/collection': 3.0.0-dev.1765454516-df0c28afc
-      '@discordjs/formatters': 1.0.0-dev.1765454516-df0c28afc
-      '@discordjs/rest': 3.0.0-dev.1765454516-df0c28afc
-      '@discordjs/util': 2.0.0-dev.1765454516-df0c28afc
-      '@discordjs/ws': 3.0.0-dev.1765454516-df0c28afc
+      '@discordjs/builders': 2.0.0-dev.1765584117-c4fc79a3c
+      '@discordjs/collection': 3.0.0-dev.1765584117-c4fc79a3c
+      '@discordjs/formatters': 1.0.0-dev.1765584117-c4fc79a3c
+      '@discordjs/rest': 3.0.0-dev.1765584117-c4fc79a3c
+      '@discordjs/util': 2.0.0-dev.1765584117-c4fc79a3c
+      '@discordjs/ws': 3.0.0-dev.1765584117-c4fc79a3c
       '@sapphire/snowflake': 3.5.5
       '@vladfrangu/async_event_emitter': 2.4.7
       discord-api-types: 0.38.36
