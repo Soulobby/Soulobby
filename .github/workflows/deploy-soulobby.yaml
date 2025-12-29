@@ -1,21 +1,23 @@
-name: Deploy Soulobby codebase
+name: Deploy Soulobby
 on:
   push:
     branches:
       - main
+    paths:
+      - apps/soulobby/**/*
   workflow_dispatch:
     inputs:
       no-cache:
         description: Skip the cache check?
         type: boolean
 concurrency:
-  group: deploy
+  group: deploy-soulobby
   cancel-in-progress: true
 permissions:
   contents: read
 jobs:
   deploy:
-    name: Deploy Soulobby
+    name: Deploy application
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -26,4 +28,4 @@ jobs:
           flyctl secrets set --config apps/soulobby/fly.toml --stage SENTRY_RELEASE=${{ github.sha }}
           flyctl deploy --config apps/soulobby/fly.toml --dockerfile apps/soulobby/Dockerfile --remote-only ${{ github.event.inputs.no-cache == 'true' && '--no-cache' || '' }}
         env:
-          FLY_API_TOKEN: ${{ secrets.FLY_DEPLOY_TOKEN }}
+          FLY_API_TOKEN: ${{ secrets.FLY_DEPLOY_SOULOBBY_TOKEN }}
