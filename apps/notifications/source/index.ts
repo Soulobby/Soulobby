@@ -38,6 +38,7 @@ new Cron("* * * * *", async () => {
 	const hours = date.getUTCHours();
 	const minutes = date.getUTCMinutes();
 	const now = date.getTime();
+	pino.info({ date: date.toISOString() }, "Date");
 	const notifications: NotificationsData[] = [];
 
 	if (hours === 0 && minutes === 0) {
@@ -74,6 +75,7 @@ new Cron("* * * * *", async () => {
 	if (minutes === 55) {
 		const futureDate = new Date(now + 300000);
 		const futureDateMilliseconds = futureDate.getTime();
+		pino.info({ futureDate: futureDate.toISOString() }, "55 future date");
 
 		if (guthixianCache(futureDateMilliseconds)) {
 			notifications.push({
@@ -116,12 +118,15 @@ new Cron("* * * * *", async () => {
 
 	if (minutes === 40 && isChristmas2025Event(now)) {
 		const futureDate = new Date(now + 300000);
+		pino.info({ futureDate: futureDate.toISOString() }, "40 + Christmas future date");
 
 		notifications.push({
 			roleId: SNOWVERLOAD_ROLE_ID,
 			content: `<@&${SNOWVERLOAD_ROLE_ID}> spawns <t:${futureDate.getTime() / 1000}:R>!`,
 		});
 	}
+
+	pino.info({ notifications }, "Notifications array");
 
 	const notificationsSettled = await Promise.allSettled(
 		notifications.map(
