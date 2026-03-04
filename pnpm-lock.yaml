@@ -17,7 +17,7 @@ importers:
     dependencies:
       '@discordjs/core':
         specifier: dev
-        version: 3.0.0-pr-11006.1765452229-e636950b2
+        version: 3.0.0-dev.1772496345-d6e160940
       '@discordjs/rest':
         specifier: dev
         version: 3.0.0-dev.1772496345-d6e160940
@@ -406,12 +406,8 @@ packages:
     resolution: {integrity: sha512-VmIL8W9he6QZzb+Gq9mlEfoQePhXCYgg92FNFrz6JaUMGSiAvLWc4eM15yUO25AmA7x8bZZd0Oy8LzhxVeShrQ==}
     engines: {node: '>=22.12.0'}
 
-  '@discordjs/collection@3.0.0-pr-11006.1765452229-e636950b2':
-    resolution: {integrity: sha512-vh0bJT+RvXlkJlmfs9I3f5fr3vxJ8I7GRUzgMuI/CSrftBxYt2xJ9XEZfQm8DLP6CVNokkA7UcL1YBiSp6f1cQ==}
-    engines: {node: '>=22.12.0'}
-
-  '@discordjs/core@3.0.0-pr-11006.1765452229-e636950b2':
-    resolution: {integrity: sha512-ikn15d4lmHDyn4Z4qRfeQkWh7KBnRB0XHuR6BwXSUdROfkCCVYXQuXGNoOWmB7FhJvHieD8ge26N0XMlRnyTVw==}
+  '@discordjs/core@3.0.0-dev.1772496345-d6e160940':
+    resolution: {integrity: sha512-wTgGV//W7QntnUUGErJppj211r6rrssd2027Hw0xu8qu3mMTekBl3nVKQverQyxHCLBF4/qMKChvZ3hFMdaoWg==}
     engines: {node: '>=22.12.0'}
 
   '@discordjs/formatters@1.0.0-dev.1772496345-d6e160940':
@@ -422,24 +418,12 @@ packages:
     resolution: {integrity: sha512-706h81hensDEKdmWwtJFIODSOGxKdHeNwi+CP7CmEWf0/erR8iIo8l4X0C9As6c49+rXedPRu/A4a6Zyfekoxg==}
     engines: {node: '>=22.12.0'}
 
-  '@discordjs/rest@3.0.0-pr-11006.1765452229-e636950b2':
-    resolution: {integrity: sha512-J3DRSmpPbnXXnbkZaKJtJ93Nhfl2ZEK5OVDZBrktnKWJHC+aeQhDmuVKJ+WzZnUUdVmnz340WhoHbdEB0VESWg==}
-    engines: {node: '>=22.12.0'}
-
   '@discordjs/util@2.0.0-dev.1772496345-d6e160940':
     resolution: {integrity: sha512-mCy65FHIgmGjfk11U6jrKJen2CpfIAkpqQfBCthkjeItKzYMvDb5rF59DhsBFf1dhqseH2rpwpd6lPZuUSy6uw==}
     engines: {node: '>=22.12.0'}
 
-  '@discordjs/util@2.0.0-pr-11006.1765452229-e636950b2':
-    resolution: {integrity: sha512-hLD13H+rH5tOGhswhAR0Pi7lYyTuWmSTssVSGCj1LVcQVJNxtSnuvE6Ta6NVMlp9QQqys4fKokMGlivVeFx/mg==}
-    engines: {node: '>=22.12.0'}
-
   '@discordjs/ws@3.0.0-dev.1772496345-d6e160940':
     resolution: {integrity: sha512-hsEyXAHF38pS1TVdO4PinUcwusdeRqTzXWXqQDnoRg/rqa/6m4kUWVZ45wfAcZ1XZXarLJLIu1Xp7cy1CAQbZg==}
-    engines: {node: '>=22.12.0'}
-
-  '@discordjs/ws@3.0.0-pr-11006.1765452229-e636950b2':
-    resolution: {integrity: sha512-TdjFqh8egoNYga1GpehuyuOR7p0XTe2ySK1GthHaHg+LsQoaBuOCWH4Ngny7C53XwRf6qxBHHCe+byYrYu/XKQ==}
     engines: {node: '>=22.12.0'}
 
   '@emnapi/core@1.7.1':
@@ -1620,9 +1604,6 @@ packages:
     resolution: {integrity: sha512-sSuxWU5j5SR9QQji/o2qMvqRNYRDOcBTgsJ/DeCf4iSN4gW+gNMXM7wFIP+fdXZxoNiAnHUTGjCr+TSWXdRDKg==}
     engines: {node: '>=0.3.1'}
 
-  discord-api-types@0.38.36:
-    resolution: {integrity: sha512-qrbUbjjwtyeBg5HsAlm1C859epfOyiLjPqAOzkdWlCNsZCWJrertnETF/NwM8H+waMFU58xGSc5eXUfXah+WTQ==}
-
   discord-api-types@0.38.40:
     resolution: {integrity: sha512-P/His8cotqZgQqrt+hzrocp9L8RhQQz1GkrCnC9TMJ8Uw2q0tg8YyqJyGULxhXn/8kxHETN4IppmOv+P2m82lQ==}
 
@@ -2062,10 +2043,6 @@ packages:
   undici@7.22.0:
     resolution: {integrity: sha512-RqslV2Us5BrllB+JeiZnK4peryVTndy9Dnqq62S3yYRRTj0tFQCwEniUy2167skdGOy3vqRzEvl1Dm4sV2ReDg==}
     engines: {node: '>=20.18.1'}
-
-  uuid@11.1.0:
-    resolution: {integrity: sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==}
-    hasBin: true
 
   uuid@13.0.0:
     resolution: {integrity: sha512-XQegIaBTVUjSHliKqcnFqYypAd4S+WCYt5NIeRs6w/UAry7z8Y9j5ZwRRL4kzq9U3sD6v+85er9FvkEaBpji2w==}
@@ -2671,16 +2648,14 @@ snapshots:
 
   '@discordjs/collection@3.0.0-dev.1772496345-d6e160940': {}
 
-  '@discordjs/collection@3.0.0-pr-11006.1765452229-e636950b2': {}
-
-  '@discordjs/core@3.0.0-pr-11006.1765452229-e636950b2':
+  '@discordjs/core@3.0.0-dev.1772496345-d6e160940':
     dependencies:
-      '@discordjs/rest': 3.0.0-pr-11006.1765452229-e636950b2
-      '@discordjs/util': 2.0.0-pr-11006.1765452229-e636950b2
-      '@discordjs/ws': 3.0.0-pr-11006.1765452229-e636950b2
+      '@discordjs/rest': 3.0.0-dev.1772496345-d6e160940
+      '@discordjs/util': 2.0.0-dev.1772496345-d6e160940
+      '@discordjs/ws': 3.0.0-dev.1772496345-d6e160940
       '@sapphire/snowflake': 3.5.5
       '@vladfrangu/async_event_emitter': 2.4.7
-      discord-api-types: 0.38.36
+      discord-api-types: 0.38.40
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -2702,26 +2677,9 @@ snapshots:
       undici: 7.22.0
       uuid: 13.0.0
 
-  '@discordjs/rest@3.0.0-pr-11006.1765452229-e636950b2':
-    dependencies:
-      '@discordjs/collection': 3.0.0-pr-11006.1765452229-e636950b2
-      '@discordjs/util': 2.0.0-pr-11006.1765452229-e636950b2
-      '@sapphire/async-queue': 1.5.5
-      '@sapphire/snowflake': 3.5.5
-      '@vladfrangu/async_event_emitter': 2.4.7
-      discord-api-types: 0.38.36
-      magic-bytes.js: 1.13.0
-      tslib: 2.8.1
-      undici: 7.16.0
-      uuid: 11.1.0
-
   '@discordjs/util@2.0.0-dev.1772496345-d6e160940':
     dependencies:
       discord-api-types: 0.38.40
-
-  '@discordjs/util@2.0.0-pr-11006.1765452229-e636950b2':
-    dependencies:
-      discord-api-types: 0.38.36
 
   '@discordjs/ws@3.0.0-dev.1772496345-d6e160940':
     dependencies:
@@ -2731,20 +2689,6 @@ snapshots:
       '@types/ws': 8.18.1
       '@vladfrangu/async_event_emitter': 2.4.7
       discord-api-types: 0.38.40
-      tslib: 2.8.1
-      ws: 8.19.0
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-
-  '@discordjs/ws@3.0.0-pr-11006.1765452229-e636950b2':
-    dependencies:
-      '@discordjs/collection': 3.0.0-pr-11006.1765452229-e636950b2
-      '@discordjs/util': 2.0.0-pr-11006.1765452229-e636950b2
-      '@sapphire/async-queue': 1.5.5
-      '@types/ws': 8.18.1
-      '@vladfrangu/async_event_emitter': 2.4.7
-      discord-api-types: 0.38.36
       tslib: 2.8.1
       ws: 8.19.0
     transitivePeerDependencies:
@@ -3900,8 +3844,6 @@ snapshots:
 
   diff@8.0.2: {}
 
-  discord-api-types@0.38.36: {}
-
   discord-api-types@0.38.40: {}
 
   discord.js@15.0.0-dev.1772496345-d6e160940:
@@ -4424,8 +4366,6 @@ snapshots:
   undici@7.16.0: {}
 
   undici@7.22.0: {}
-
-  uuid@11.1.0: {}
 
   uuid@13.0.0: {}
 
