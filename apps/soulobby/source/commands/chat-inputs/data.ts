@@ -1,11 +1,6 @@
-import {
-	type ChatInputCommandInteraction,
-	EmbedBuilder,
-	formatEmoji,
-	MessageFlags,
-	TimestampStyles,
-	userMention,
-} from "discord.js";
+import { EmbedBuilder } from "@discordjs/builders";
+import { formatEmoji, TimestampStyles, userMention } from "@discordjs/formatters";
+import { type ChatInputCommandInteraction, MessageFlags } from "discord.js";
 import { avatar } from "runescape";
 import type { CorruptedEggPacket } from "../../models/Calls.js";
 import Friend from "../../models/Friend.js";

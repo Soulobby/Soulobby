@@ -1,13 +1,17 @@
 import { URL } from "node:url";
 import {
+	time as discordTime,
+	hideLinkEmbed,
+	hyperlink,
+	TimestampStyles,
+	type TimestampStylesString,
+} from "@discordjs/formatters";
+import {
 	type Attachment,
 	Collection,
-	time as discordTime,
 	type Guild,
 	type GuildMember,
 	type GuildTextBasedChannel,
-	hideLinkEmbed,
-	hyperlink,
 	type Message,
 	MessageType,
 	type PartialGuildMember,
@@ -15,8 +19,6 @@ import {
 	PermissionFlagsBits,
 	type Snowflake,
 	type TextBasedChannel,
-	TimestampStyles,
-	type TimestampStylesString,
 	type User,
 } from "discord.js";
 import type { MessagesPacket } from "../features/message-log.js";

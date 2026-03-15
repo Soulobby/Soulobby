@@ -1,9 +1,9 @@
+import { TimestampStyles } from "@discordjs/formatters";
 import {
 	type AutocompleteInteraction,
 	type ChatInputCommandInteraction,
 	MessageFlags,
 	type Snowflake,
-	TimestampStyles,
 } from "discord.js";
 import { hiScore, profile } from "runescape";
 import z from "zod";

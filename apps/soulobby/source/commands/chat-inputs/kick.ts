@@ -1,10 +1,5 @@
-import {
-	ChannelType,
-	type ChatInputCommandInteraction,
-	channelMention,
-	MessageFlags,
-	messageLink,
-} from "discord.js";
+import { channelMention, messageLink } from "@discordjs/formatters";
+import { ChannelType, type ChatInputCommandInteraction, MessageFlags } from "discord.js";
 import { type CreateKickCaseOptions, createKick } from "../../features/cases-discord.js";
 import { DISCORD_CASES_CHANNEL_ID, TOPICS_CHANNEL_ID } from "../../utility/configuration.js";
 

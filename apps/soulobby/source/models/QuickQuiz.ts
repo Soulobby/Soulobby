@@ -1,10 +1,6 @@
-import {
-	ActionRowBuilder,
-	type ButtonInteraction,
-	formatEmoji,
-	MessageFlags,
-	SecondaryButtonBuilder,
-} from "discord.js";
+import { ActionRowBuilder, SecondaryButtonBuilder } from "@discordjs/builders";
+import { formatEmoji } from "@discordjs/formatters";
+import { type ButtonInteraction, MessageFlags } from "discord.js";
 import { LEARNER_ROLE_ID } from "../utility/configuration.js";
 import { EMOJIS } from "../utility/emojis.js";
 import { LogType } from "../utility/functions.js";

@@ -1,9 +1,9 @@
+import { EmbedBuilder } from "@discordjs/builders";
+import { TimestampStyles } from "@discordjs/formatters";
 import {
 	ChannelType,
-	EmbedBuilder,
 	type GuildMember,
 	type PartialGuildMember,
-	TimestampStyles,
 	type User,
 	UserFlags,
 } from "discord.js";

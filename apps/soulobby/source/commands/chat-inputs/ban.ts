@@ -1,11 +1,10 @@
+import { channelMention, messageLink } from "@discordjs/formatters";
 import {
 	type AutocompleteInteraction,
 	ChannelType,
 	type ChatInputCommandInteraction,
-	channelMention,
 	DiscordAPIError,
 	MessageFlags,
-	messageLink,
 	RESTJSONErrorCodes,
 } from "discord.js";
 import {

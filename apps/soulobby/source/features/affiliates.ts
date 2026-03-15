@@ -1,13 +1,12 @@
+import { ContainerBuilder, TextDisplayBuilder } from "@discordjs/builders";
+import { formatEmoji } from "@discordjs/formatters";
 import {
 	ChannelType,
 	type ChatInputCommandInteraction,
 	type Client,
-	ContainerBuilder,
-	formatEmoji,
 	MessageFlags,
 	SeparatorSpacingSize,
 	type Snowflake,
-	TextDisplayBuilder,
 } from "discord.js";
 import { AFFILIATES_CHANNEL_ID, RAW_AFFILIATES_CHANNEL_ID } from "../utility/configuration.js";
 import { EMOJIS } from "../utility/emojis.js";

@@ -58,6 +58,12 @@ importers:
       '@aws-sdk/client-s3':
         specifier: ^3.931.0
         version: 3.940.0
+      '@discordjs/builders':
+        specifier: dev
+        version: 2.0.0-dev.1773446773-2a067216c
+      '@discordjs/formatters':
+        specifier: dev
+        version: 1.0.0-dev.1773446773-2a067216c
       '@sentry/node':
         specifier: ^10.25.0
         version: 10.27.0
@@ -92,8 +98,8 @@ importers:
         specifier: ^6.0.4
         version: 6.0.4
       undici:
-        specifier: ^7.16.0
-        version: 7.16.0
+        specifier: ^7.24.2
+        version: 7.24.2
       zod:
         specifier: ^4.1.12
         version: 4.1.13
@@ -397,6 +403,10 @@ packages:
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [win32]
+
+  '@discordjs/builders@2.0.0-dev.1773446773-2a067216c':
+    resolution: {integrity: sha512-DkuhDm/5NuaZ2Q7ICanQasPQ1RnSkGE30GZdqBNZ2aHbe1w5yZQPfnH/u381K6IMdaZ9Pl5JaL9QCw4u9iA5tQ==}
+    engines: {node: '>=22.12.0'}
 
   '@discordjs/collection@3.0.0-dev.1773446773-2a067216c':
     resolution: {integrity: sha512-KDtN1L4hJVuejhnwUiqaJWOlu89SY2F3OnJv7QNNLyImS3b5KhLLO/tPwlelklpI6XG4zq0+szXBbFwcEkSrsA==}
@@ -2032,12 +2042,12 @@ packages:
   undici-types@7.16.0:
     resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
 
-  undici@7.16.0:
-    resolution: {integrity: sha512-QEg3HPMll0o3t2ourKwOeUAZ159Kn9mx5pnzHRQO8+Wixmh88YdZRiIwat0iNzNNXn0yoEtXJqFpyW7eM8BV7g==}
-    engines: {node: '>=20.18.1'}
-
   undici@7.22.0:
     resolution: {integrity: sha512-RqslV2Us5BrllB+JeiZnK4peryVTndy9Dnqq62S3yYRRTj0tFQCwEniUy2167skdGOy3vqRzEvl1Dm4sV2ReDg==}
+    engines: {node: '>=20.18.1'}
+
+  undici@7.24.2:
+    resolution: {integrity: sha512-P9J1HWYV/ajFr8uCqk5QixwiRKmB1wOamgS0e+o2Z4A44Ej2+thFVRLG/eA7qprx88XXhnV5Bl8LHXTURpzB3Q==}
     engines: {node: '>=20.18.1'}
 
   uuid@13.0.0:
@@ -2069,6 +2079,9 @@ packages:
 
   zod@4.1.13:
     resolution: {integrity: sha512-AvvthqfqrAhNH9dnfmrfKzX5upOdjUVJYFqNSlkmGf64gRaTzlPwz99IHYnVs28qYAybvAlBV+H7pn0saFY4Ig==}
+
+  zod@4.3.6:
+    resolution: {integrity: sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg==}
 
 snapshots:
 
@@ -2630,6 +2643,14 @@ snapshots:
 
   '@biomejs/cli-win32-x64@2.3.8':
     optional: true
+
+  '@discordjs/builders@2.0.0-dev.1773446773-2a067216c':
+    dependencies:
+      '@discordjs/util': 2.0.0-dev.1773446773-2a067216c
+      discord-api-types: 0.38.41
+      ts-mixer: 6.0.4
+      tslib: 2.8.1
+      zod: 4.3.6
 
   '@discordjs/collection@3.0.0-dev.1773446773-2a067216c': {}
 
@@ -4347,9 +4368,9 @@ snapshots:
 
   undici-types@7.16.0: {}
 
-  undici@7.16.0: {}
-
   undici@7.22.0: {}
+
+  undici@7.24.2: {}
 
   uuid@13.0.0: {}
 
@@ -4362,3 +4383,5 @@ snapshots:
   xtend@4.0.2: {}
 
   zod@4.1.13: {}
+
+  zod@4.3.6: {}

@@ -1,12 +1,10 @@
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import {
 	ActionRowBuilder,
-	type Attachment,
-	type ChatInputCommandInteraction,
-	MessageFlags,
 	StringSelectMenuBuilder,
 	StringSelectMenuOptionBuilder,
-} from "discord.js";
+} from "@discordjs/builders";
+import { type Attachment, type ChatInputCommandInteraction, MessageFlags } from "discord.js";
 import { hash } from "hasha";
 import sharp from "sharp";
 import Ignore from "../../models/Ignore.js";

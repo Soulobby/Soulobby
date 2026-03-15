@@ -1,15 +1,13 @@
 import process from "node:process";
+import { type AttachmentBuilder, type EmbedBuilder, MessageBuilder } from "@discordjs/builders";
 import {
-	type AttachmentBuilder,
 	ChannelType,
 	Client,
-	type EmbedBuilder,
 	Events,
 	GatewayIntentBits,
 	type GuildBasedChannel,
 	type GuildChannelTypes,
 	type MappedGuildChannelTypes,
-	MessageBuilder,
 	Options,
 	Partials,
 	PermissionFlagsBits,
@@ -17,7 +15,6 @@ import {
 	type TextChannel,
 	type ThreadChannel,
 } from "discord.js";
-import { Agent } from "undici";
 import type { Event } from "./events/index.js";
 import events from "./events/index.js";
 import Friend, { type FriendPacket } from "./models/Friend.js";
@@ -197,9 +194,6 @@ const client = new Soulobby({
 		UserManager: 500,
 	}),
 	partials: [Partials.GuildMember, Partials.Message],
-	rest: {
-		agent: new Agent(),
-	},
 });
 
 for (const event of events) {

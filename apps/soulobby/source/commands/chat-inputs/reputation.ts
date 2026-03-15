@@ -1,4 +1,5 @@
-import { type ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
+import { EmbedBuilder } from "@discordjs/builders";
+import type { ChatInputCommandInteraction } from "discord.js";
 import { avatar, profile, QuestStatus, QuestTitle, questDetails, SkillId } from "runescape";
 import pino from "../../pino.js";
 import { SMALL_XP_LAMP_EXPERIENCE } from "../../utility/constants.js";

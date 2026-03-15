@@ -1,16 +1,12 @@
+import { ContainerBuilder, EmbedBuilder } from "@discordjs/builders";
+import { formatEmoji, messageLink, TimestampStyles, userMention } from "@discordjs/formatters";
 import {
 	type ButtonInteraction,
 	ChannelType,
 	type Client,
-	ContainerBuilder,
 	type Message as DiscordMessage,
-	EmbedBuilder,
-	formatEmoji,
-	messageLink,
 	PermissionFlagsBits,
 	type Snowflake,
-	TimestampStyles,
-	userMention,
 } from "discord.js";
 import { hiScore, profile } from "runescape";
 import { Mixin } from "ts-mixer";

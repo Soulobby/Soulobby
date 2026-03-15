@@ -1,10 +1,10 @@
+import { EmbedBuilder } from "@discordjs/builders";
+import { TimestampStyles } from "@discordjs/formatters";
 import {
 	type ChatInputCommandInteraction,
 	type DeconstructedSnowflake,
-	EmbedBuilder,
 	MessageFlags,
 	SnowflakeUtil,
-	TimestampStyles,
 } from "discord.js";
 import { time } from "../../utility/functions.js";
 

@@ -1,11 +1,10 @@
 import { Buffer } from "node:buffer";
+import { EmbedBuilder } from "@discordjs/builders";
+import { hyperlink, messageLink } from "@discordjs/formatters";
 import { diffLines, diffWords } from "diff";
 import {
-	EmbedBuilder,
-	hyperlink,
 	type Message,
 	MessageType,
-	messageLink,
 	type PartialMessage,
 	type ReadonlyCollection,
 	type Snowflake,

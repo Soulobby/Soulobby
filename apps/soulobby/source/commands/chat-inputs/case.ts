@@ -1,10 +1,9 @@
+import { channelMention, messageLink } from "@discordjs/formatters";
 import {
 	type AutocompleteInteraction,
 	ChannelType,
 	type ChatInputCommandInteraction,
-	channelMention,
 	MessageFlags,
-	messageLink,
 } from "discord.js";
 import { type CasesPacket, caseAutocomplete, edit } from "../../features/cases-discord.js";
 import pg, { Table } from "../../pg.js";

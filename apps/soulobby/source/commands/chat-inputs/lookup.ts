@@ -1,4 +1,6 @@
-import { type ChatInputCommandInteraction, EmbedBuilder, hyperlink } from "discord.js";
+import { EmbedBuilder } from "@discordjs/builders";
+import { hyperlink } from "@discordjs/formatters";
+import type { ChatInputCommandInteraction } from "discord.js";
 import {
 	avatar,
 	clanPage,

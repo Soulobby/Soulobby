@@ -1,10 +1,9 @@
+import { channelMention, messageLink } from "@discordjs/formatters";
 import {
 	ChannelType,
 	type ChatInputCommandInteraction,
-	channelMention,
 	DiscordAPIError,
 	MessageFlags,
-	messageLink,
 	RESTJSONErrorCodes,
 } from "discord.js";
 import { createUnban } from "../../features/cases-discord.js";
