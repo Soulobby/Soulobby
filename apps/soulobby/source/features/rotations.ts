@@ -117,9 +117,7 @@ async function fetchOverview() {
 export async function healthCheck(client: Client<true>) {
 	const overview = await fetchOverview();
 
-	if (overview.last_updated_at.toDateString() !== new Date().toDateString()) {
-		await dailyReset(client);
-	} else {
+	if (overview.last_updated_at.toDateString() === new Date().toDateString()) {
 		const rotationsPacket = (await pg<RotationsPacket>(Table.Rotations).first())!;
 
 		if (rotationsPacket.scheduled_reset_timestamp) {
@@ -134,6 +132,8 @@ export async function healthCheck(client: Client<true>) {
 				rotationsPacket.scheduled_reset_timestamp.getTime() - Date.now(),
 			);
 		}
+	} else {
+		await dailyReset(client);
 	}
 }
 

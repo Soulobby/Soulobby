@@ -34,7 +34,6 @@
 				"useJsxKeyInIterable": "on"
 			},
 			"nursery": {
-				"noDeprecatedImports": "on",
 				"noFloatingPromises": "on"
 			},
 			"performance": {
@@ -75,7 +74,8 @@
 			"suspicious": {
 				"noAlert": "error",
 				"noConstantBinaryExpressions": "on",
-				"noConstEnum": "off"
+				"noConstEnum": "off",
+				"noDeprecatedImports": "on"
 			}
 		}
 	},

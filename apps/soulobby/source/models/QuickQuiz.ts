@@ -197,7 +197,9 @@ export async function quickQuiz(interaction: ButtonInteraction<"cached">, index 
 	let questionText = "";
 	let logText = `${user} (${user.tag})`;
 
-	if (index !== 0) {
+	if (index === 0) {
+		logText += " started the quick quiz.";
+	} else {
 		const { question, answer, feedback } = QUICK_QUIZ_QUESTIONS_AND_ANSWERS[index - 1];
 		const answerJSON = answer.toJSON();
 
@@ -238,8 +240,6 @@ export async function quickQuiz(interaction: ButtonInteraction<"cached">, index 
 		}
 
 		logText += ` Moving to question ${index + 1}.`;
-	} else {
-		logText += " started the quick quiz.";
 	}
 
 	void interaction.client.log({ type: LogType.QuickQuizLog, content: logText });
