@@ -26,7 +26,7 @@ import {
 	TextInputStyle,
 	type User,
 } from "discord.js";
-import { Item, Jewel, jewel, stock } from "runescape";
+import { Jewel, jewel } from "runescape";
 import pg, { Table } from "../pg.js";
 import {
 	BLANCHY_ROLE_ID,
@@ -47,7 +47,6 @@ import {
 	MAXIMUM_P2P_ENGLISH_SERVER_LENGTH,
 	P2P_ENGLISH_SERVERS,
 	type P2PEnglishServers,
-	TRAVELLING_MERCHANTS_SHOP,
 	WIKI_CATS_OF_MENAPHOS,
 } from "../utility/constants.js";
 import { EMOJIS } from "../utility/emojis.js";
@@ -642,21 +641,6 @@ async function overviewComponents(
 	apmekenString = `${apmekenString} (${time(apmeken.getTime(), TimestampStyles.RelativeTime)})`;
 	let scabariteString = Intl.DateTimeFormat(Locale.EnglishGB).format(scabarite);
 	scabariteString = `${scabariteString} (${time(scabarite.getTime(), TimestampStyles.RelativeTime)})`;
-	let nextMenaphiteGiftOffering: string | null = null;
-	const travellingMerchantDate = new Date();
-	travellingMerchantDate.setUTCHours(0, 0, 0, 0);
-	const stockTodayEmojis = menaphiteGiftOfferingsToday(stock(travellingMerchantDate.getTime()));
-	travellingMerchantDate.setUTCDate(travellingMerchantDate.getUTCDate() + 1);
-
-	for (
-		;
-		nextMenaphiteGiftOffering === null;
-		travellingMerchantDate.setUTCDate(travellingMerchantDate.getUTCDate() + 1)
-	) {
-		if (menaphiteGiftOfferingsToday(stock(travellingMerchantDate.getTime())).length > 0) {
-			nextMenaphiteGiftOffering = `${Intl.DateTimeFormat("en-GB").format(travellingMerchantDate)} (${time(travellingMerchantDate.getTime(), TimestampStyles.RelativeTime)})`;
-		}
-	}
 
 	return new ContainerBuilder()
 		.addTextDisplayComponents((textDisplay) =>
@@ -705,37 +689,5 @@ async function overviewComponents(
 						`### Jewels\n\nToday: ${jewelTodayString}\n-# Next ${formatEmoji(EMOJIS.ApmekenAmethyst)} Apmeken amethyst: ${apmekenString}\n-# Next ${formatEmoji(EMOJIS.ScabariteCrystal)} Scabarite crystal: ${scabariteString}`,
 					),
 				),
-		)
-		.addSeparatorComponents((separator) =>
-			separator.setDivider().setSpacing(SeparatorSpacingSize.Small),
-		)
-		.addSectionComponents((section) =>
-			section
-				.setLinkButtonAccessory((linkButton) =>
-					linkButton.setLabel("Wiki").setURL(TRAVELLING_MERCHANTS_SHOP),
-				)
-				.addTextDisplayComponents((textDisplay) =>
-					textDisplay.setContent(
-						`### Travelling merchant\n\nToday: **${stockTodayEmojis.length > 0 ? `${stockTodayEmojis.join(" ")} Available!` : "Unavailable"}**\n-# Next Menaphite gift offering: ${nextMenaphiteGiftOffering}`,
-					),
-				),
 		);
-}
-
-function menaphiteGiftOfferingsToday(items: readonly [Item, Item, Item]) {
-	const emojis: string[] = [];
-
-	if (items.includes(Item.MenaphiteGiftOfferingLarge)) {
-		emojis.push(formatEmoji(EMOJIS.MenaphiteGiftOfferingLarge));
-	}
-
-	if (items.includes(Item.MenaphiteGiftOfferingMedium)) {
-		emojis.push(formatEmoji(EMOJIS.MenaphiteGiftOfferingMedium));
-	}
-
-	if (items.includes(Item.MenaphiteGiftOfferingSmall)) {
-		emojis.push(formatEmoji(EMOJIS.MenaphiteGiftOfferingSmall));
-	}
-
-	return emojis;
 }

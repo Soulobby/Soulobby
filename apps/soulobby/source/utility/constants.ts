@@ -349,6 +349,3 @@ export const WIKI_CATS_OF_MENAPHOS = "https://runescape.wiki/w/Cats_of_Menaphos"
 
 export const JEWELS_OF_THE_ELID_ROTATION =
 	"https://runescape.wiki/w/Jewels_of_the_Elid/Rotation" as const;
-
-export const TRAVELLING_MERCHANTS_SHOP =
-	"https://runescape.wiki/w/Travelling_Merchant%27s_Shop" as const;
