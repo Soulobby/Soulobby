@@ -510,7 +510,7 @@ export class CorruptedScarabsCall extends Mixin(BaseCall, BaseState) {
 	}
 }
 
-export class DailyCatCall extends Mixin(BaseCall, DailyCatLocation) {
+class DailyCatCall extends Mixin(BaseCall, DailyCatLocation) {
 	public declare readonly world: P2PEnglishServers;
 
 	public override readonly type = CallType.DailyCat;
