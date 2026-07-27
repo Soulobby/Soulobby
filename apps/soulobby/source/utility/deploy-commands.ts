@@ -816,47 +816,6 @@ const COMMANDS: RESTPostAPIApplicationCommandsJSONBody[] = [
 		contexts: [InteractionContextType.Guild],
 	},
 	{
-		name: "snowflake",
-		description: "Snowflake utility commands.",
-		type: ApplicationCommandType.ChatInput,
-		options: [
-			{
-				type: ApplicationCommandOptionType.Subcommand,
-				name: "deconstruct",
-				description: "Deconstructs a snowflake.",
-				options: [
-					{
-						type: ApplicationCommandOptionType.String,
-						name: "snowflake",
-						description: "The snowflake to deconstruct.",
-						required: true,
-					},
-				],
-			},
-			{
-				type: ApplicationCommandOptionType.Subcommand,
-				name: "difference",
-				description: "Returns the difference in time between two snowflakes.",
-				options: [
-					{
-						type: ApplicationCommandOptionType.String,
-						name: "snowflake-1",
-						description: "The first snowflake to use.",
-						required: true,
-					},
-					{
-						type: ApplicationCommandOptionType.String,
-						name: "snowflake-2",
-						description: "The second snowflake to use.",
-						required: true,
-					},
-				],
-			},
-		],
-		integration_types: [ApplicationIntegrationType.GuildInstall],
-		contexts: [InteractionContextType.Guild],
-	},
-	{
 		name: "time-out",
 		description: "Times out an account.",
 		type: ApplicationCommandType.ChatInput,
