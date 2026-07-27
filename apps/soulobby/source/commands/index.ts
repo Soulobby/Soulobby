@@ -13,7 +13,6 @@ import purge from "./chat-inputs/purge.js";
 import quest from "./chat-inputs/quest.js";
 import reputation from "./chat-inputs/reputation.js";
 import request from "./chat-inputs/request.js";
-import snowflake from "./chat-inputs/snowflake.js";
 import time_out from "./chat-inputs/time-out.js";
 import unban from "./chat-inputs/unban.js";
 import request_info from "./user-context-menus/request-info.js";
@@ -35,7 +34,6 @@ export const CHAT_INPUT_COMMANDS = [
 	quest,
 	reputation,
 	request,
-	snowflake,
 	time_out,
 	unban,
 ] as const;
