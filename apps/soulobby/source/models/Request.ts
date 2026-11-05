@@ -43,7 +43,7 @@ import {
 	type UserContextMenuCommandInteraction,
 } from "discord.js";
 import { hash } from "hasha";
-import { hiScore, profile } from "runescape";
+import { hiScore, playerQuests } from "runescape";
 import pg, { Table } from "../pg.js";
 import S3Client from "../s3-client.js";
 import {
@@ -443,14 +443,13 @@ export default class Request extends Base {
 
 		const error = [];
 
-		const data =
-			(await profile({ name: rawRSN, activities: 0 }).catch(() => null)) ??
-			(await hiScore({ name: rawRSN }).catch(() => null));
+		const [hiScoreData, questData] = await Promise.all([
+			hiScore({ name: rawRSN }).catch(() => null),
+			playerQuests({ name: rawRSN }).catch(() => null),
+		]);
 
-		if (!data) {
-			error.push(
-				`- \`${rawRSN}\` is not on the HiScores and does not have a public RuneMetrics profile. Is the RSN correct?`,
-			);
+		if (!hiScoreData) {
+			error.push(`- \`${rawRSN}\` is not on the HiScores. Is the RSN correct?`);
 		}
 
 		if (!isValidAttachment(ishharaProof)) {
@@ -471,8 +470,9 @@ export default class Request extends Base {
 			return;
 		}
 
-		const RSN = "name" in data! ? data.name : rawRSN;
-		const totalLevel = "totalSkill" in data! ? data.totalSkill : data!.total.level;
+		// Only the quest data has the canonical display name.
+		const RSN = questData?.name ?? rawRSN;
+		const totalLevel = hiScoreData!.overall.level;
 		const VIP = metadata.includes(PREMIER_MEMBERSHIP_VALUE);
 		const sophAccess = metadata.includes(SOPHANEM_ACCESS_VALUE);
 		const application = { RSN, totalLevel, VIP, sophAccess };

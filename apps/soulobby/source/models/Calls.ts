@@ -8,7 +8,7 @@ import {
 	PermissionFlagsBits,
 	type Snowflake,
 } from "discord.js";
-import { hiScore, profile } from "runescape";
+import { hiScore, playerQuests } from "runescape";
 import { Mixin } from "ts-mixer";
 import { CALL_CACHE, updateCallCache } from "../caches/calls.js";
 import pg, { Table } from "../pg.js";
@@ -585,11 +585,11 @@ export class CorruptedEggCall extends Mixin(BaseCall, CorruptedEggLocation) {
 		if (playerName !== null) {
 			// Attempt to correct the stylisation.
 			const data =
-				(await profile({ name: playerName, activities: 0 }).catch(() => null)) ??
+				(await playerQuests({ name: playerName }).catch(() => null)) ??
 				(await hiScore({ name: playerName }).catch(() => null));
 
 			if (!data) {
-				// They don't appear to have a public RuneMetrics profile and they are not on HiScores.
+				// They don't appear to have any quest data and they are not on HiScores.
 				// There is a great possibility that this account may not exist.
 				await message.reply({
 					allowedMentions: { repliedUser: false },
@@ -600,9 +600,7 @@ export class CorruptedEggCall extends Mixin(BaseCall, CorruptedEggLocation) {
 				return;
 			}
 
-			if ("name" in data) {
-				playerName = data.name;
-			}
+			playerName = data.name;
 		}
 
 		const [packet] = await pg<CorruptedEggPacket>(Table.CorruptedEggs).insert(
