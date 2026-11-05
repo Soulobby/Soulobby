@@ -4,13 +4,14 @@ import type { ChatInputCommandInteraction } from "discord.js";
 import {
 	avatar,
 	clanPage,
+	clanPageRunepixels,
 	hiScore,
+	hiScoreComparePage,
 	playerDetails,
-	playerPage,
-	profile,
+	playerPageRunepixels,
+	playerQuests,
+	QuestId,
 	QuestStatus,
-	QuestTitle,
-	questDetails,
 } from "runescape";
 import pino from "../../pino.js";
 import { isRSN } from "../../utility/functions.js";
@@ -26,50 +27,39 @@ export default {
 			return;
 		}
 
-		const data =
-			(await profile({ activities: 0, name }).catch((error) =>
-				pino.warn(error, "Error fetching profile data."),
-			)) ??
-			(await hiScore({ name }).catch((error) => pino.warn(error, "Error fetching HiScore data.")));
+		const [hiScoreData, questData] = await Promise.all([
+			hiScore({ name }).catch((error) => pino.warn(error, "Error fetching HiScore data.")),
+			playerQuests({ name }).catch((error) => pino.warn(error, "Error fetching quest data.")),
+		]);
 
-		if (!data) {
+		if (!(hiScoreData || questData)) {
 			await interaction.editReply(
-				`Cannot find the HiScores of \`${name}\` and the RuneMetrics profile was not public. Does this account exist?`,
+				`Cannot find the HiScores or quests of \`${name}\`. Does this account exist?`,
 			);
 
 			return;
 		}
 
-		const RSN = "name" in data ? data.name : name;
-		const totalLevel = "totalSkill" in data ? data.totalSkill : data.total.level;
+		const RSN = questData ? questData.name : name;
 		const [{ clan }] = await playerDetails({ names: [RSN] });
 		let title: string;
-		const hasMenaphosAccess = `\`${RSN}\` has Menaphos access.` as const;
 
-		if ("questsNotStarted" in data && data.questsNotStarted === 0 && data.questsStarted === 0) {
-			// All quests complete! This saves an API request.
-			title = hasMenaphosAccess;
-		} else {
-			const { quests } = await questDetails({ name: RSN });
-			const questData = quests.find(({ title }) => title === QuestTitle.TheJackOfSpades);
-
-			switch (questData?.status) {
-				case QuestStatus.NotStarted: {
-					title = `\`${RSN}\` does not have Menaphos access.`;
-					break;
-				}
-				case QuestStatus.Started: {
-					title = `\`${RSN}\` could have access (quest in progress).`;
-					break;
-				}
-				case QuestStatus.Completed: {
-					title = hasMenaphosAccess;
-					break;
-				}
-				default: {
-					title = `The RuneMetrics profile of \`${RSN}\` is not public.`;
-					break;
-				}
+		switch (questData ? questData.quests[QuestId.TheJackOfSpades].status : null) {
+			case QuestStatus.NotStarted: {
+				title = `\`${RSN}\` does not have Menaphos access.`;
+				break;
+			}
+			case QuestStatus.Started: {
+				title = `\`${RSN}\` could have access (quest in progress).`;
+				break;
+			}
+			case QuestStatus.Completed: {
+				title = `\`${RSN}\` has Menaphos access.`;
+				break;
+			}
+			default: {
+				title = `The quests of \`${RSN}\` are not available.`;
+				break;
 			}
 		}
 
@@ -83,16 +73,12 @@ export default {
 			.setFields(
 				{
 					name: "HiScores",
-					value: `${totalLevel}\n-# ${Object.entries(playerPage({ name: RSN }))
-						.map(([source, url]) => hyperlink(source, url))
-						.join(" | ")}`,
+					value: `${hiScoreData ? hiScoreData.overall.level : "Unknown"}\n-# ${hyperlink("RuneScape", hiScoreComparePage(RSN))} | ${hyperlink("Runepixels", playerPageRunepixels(RSN))}`,
 				},
 				{
 					name: "Clan",
 					value: clan
-						? `${clan}\n-# ${Object.entries(clanPage({ clan }))
-								.map(([source, url]) => hyperlink(source, url))
-								.join(" | ")}`
+						? `${clan}\n-# ${hyperlink("RuneScape", clanPage(clan))} | ${hyperlink("Runepixels", clanPageRunepixels(clan))}`
 						: "None",
 				},
 			);

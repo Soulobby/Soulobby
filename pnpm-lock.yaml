@@ -31,8 +31,8 @@ importers:
         specifier: ^10.1.0
         version: 10.3.1
       runescape:
-        specifier: ^0.11.5
-        version: 0.11.5
+        specifier: ^1.0.1
+        version: 1.0.1
       zod:
         specifier: ^4.1.13
         version: 4.4.3
@@ -89,8 +89,8 @@ importers:
         specifier: ^10.1.0
         version: 10.3.1
       runescape:
-        specifier: ^0.11.5
-        version: 0.11.5
+        specifier: ^1.0.1
+        version: 1.0.1
       sharp:
         specifier: ^0.35.3
         version: 0.35.3(@types/node@24.13.2)
@@ -914,14 +914,11 @@ packages:
     resolution: {integrity: sha512-p9nwwR4qyT5W996vBZhdvBCnMhicY5ytZkR4D1Xj0wuTDEiMnjwR57Q3RXYY/s0EpX6Ay3vgIcfaR+ewGHsi+g==}
     engines: {node: '>=18.0'}
 
-  csv-parse@5.6.0:
-    resolution: {integrity: sha512-l3nz3euub2QMg5ouu5U09Ew9Wf6/wQ8I++ch1loQ0ljmzhmfZYrH9fflS22i/PQEvsPvxCwxgz5q7UB8K1JO4Q==}
+  csv-parse@7.0.3:
+    resolution: {integrity: sha512-YFd3QM/yo17vH91L1IOZuvl09zM0zEEtdfTcOCKWcMdM++MNaQSyp09slXyFCLaPXvHstQFx/xC8myiFHSMUvw==}
 
   dateformat@4.6.3:
     resolution: {integrity: sha512-2P0p0pFGzHS5EMnhdxQi7aJN+iMheud0UhG4dlE1DLAlvL8JHjJJTX/CSm4JXwV0Ka5nGk3zC5mcb5bUQUxxMA==}
-
-  dayjs@1.11.21:
-    resolution: {integrity: sha512-98IT+HOahAisibz/yjKbzuOBwYcjJ7BCLPzARyHiyEBmRz4fatF+KPJszEHXsGYjUG234aH/cOjW1wwTbKUZlA==}
 
   debug@4.3.4:
     resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
@@ -1293,8 +1290,8 @@ packages:
   run-parallel@1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
 
-  runescape@0.11.5:
-    resolution: {integrity: sha512-xYOA88wfOo6mXWTtaq+5o4RpxG+5DVhNVTPkZeDlwrEFpKwTiwS6EPaW3nbCksU1rhkroJvCNbIdtCfVpkO9hA==}
+  runescape@1.0.1:
+    resolution: {integrity: sha512-IvuaevlfyD4Mk8k81+pJAfWkOCJDEGPvETtAaR/0FLItTZwPmf4vUo8XTvOOM2ktybnTTmtsOMP14UKlyjsfhA==}
 
   safe-stable-stringify@2.5.0:
     resolution: {integrity: sha512-b3rppTKm9T+PsVCBEOUR46GWI7fdOs00VKZ1+9c1EWDaDMvjQc6tUwuFyIprgGgTcWoVHSKrU8H31ZHA2e0RHA==}
@@ -2166,11 +2163,9 @@ snapshots:
 
   croner@9.1.0: {}
 
-  csv-parse@5.6.0: {}
+  csv-parse@7.0.3: {}
 
   dateformat@4.6.3: {}
-
-  dayjs@1.11.21: {}
 
   debug@4.3.4:
     dependencies:
@@ -2558,10 +2553,9 @@ snapshots:
     dependencies:
       queue-microtask: 1.2.3
 
-  runescape@0.11.5:
+  runescape@1.0.1:
     dependencies:
-      csv-parse: 5.6.0
-      dayjs: 1.11.21
+      csv-parse: 7.0.3
 
   safe-stable-stringify@2.5.0: {}
 

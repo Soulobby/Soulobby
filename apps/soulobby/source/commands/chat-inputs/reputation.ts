@@ -1,6 +1,6 @@
 import { EmbedBuilder } from "@discordjs/builders";
 import type { ChatInputCommandInteraction } from "discord.js";
-import { avatar, profile, QuestStatus, QuestTitle, questDetails, SkillId } from "runescape";
+import { avatar, hiScore, playerQuests, QuestId, QuestStatus } from "runescape";
 import pino from "../../pino.js";
 import { SMALL_XP_LAMP_EXPERIENCE } from "../../utility/constants.js";
 import { isLevel, isRSN } from "../../utility/functions.js";
@@ -53,24 +53,20 @@ export default {
 			return;
 		}
 
-		const profileData = await profile({ activities: 0, name }).catch((error) =>
-			pino.warn(error, "Error fetching profile data."),
+		const questData = await playerQuests({ name }).catch((error) =>
+			pino.warn(error, "Error fetching quest data."),
 		);
 
-		if (!profileData) {
-			await interaction.editReply(`The RuneMetrics profile of \`${name}\` is not public.`);
+		if (!questData) {
+			await interaction.editReply(
+				`Cannot find the quests of \`${name}\`. The account may not exist or may be hidden from public view.`,
+			);
+
 			return;
 		}
 
-		const RSN = profileData.name;
-		const { quests } = await questDetails({ name });
-		const theJackofSpades = quests.find(({ title }) => title === QuestTitle.TheJackOfSpades);
-
-		if (!theJackofSpades) {
-			throw new ReferenceError(
-				`Cannot find ${QuestTitle.TheJackOfSpades} quest. Did Jagex change the name?`,
-			);
-		}
+		const { name: RSN, quests } = questData;
+		const theJackofSpades = quests[QuestId.TheJackOfSpades];
 
 		if (theJackofSpades.status !== QuestStatus.Completed) {
 			await interaction.editReply(
@@ -79,38 +75,10 @@ export default {
 			return;
 		}
 
-		const crocodileTears = quests.find(({ title }) => title === QuestTitle.CrocodileTears);
-
-		if (!crocodileTears) {
-			throw new ReferenceError(
-				`Cannot find the ${QuestTitle.CrocodileTears} quest. Did Jagex change the name?`,
-			);
-		}
-
-		const ourManInTheNorth = quests.find(({ title }) => title === QuestTitle.OurManInTheNorth);
-
-		if (!ourManInTheNorth) {
-			throw new ReferenceError(
-				`Cannot find the ${QuestTitle.OurManInTheNorth} quest. Did Jagex change the name?`,
-			);
-		}
-
-		const phiteClub = quests.find(({ title }) => title === QuestTitle.PhiteClub);
-
-		if (!phiteClub) {
-			throw new ReferenceError(
-				`Cannot find the ${QuestTitle.PhiteClub} quest. Did Jagex change the name?`,
-			);
-		}
-
-		const pharaohsFolly = quests.find(({ title }) => title === QuestTitle.PharaohsFolly);
-
-		if (!pharaohsFolly) {
-			throw new ReferenceError(
-				`Cannot find the ${QuestTitle.PharaohsFolly} quest. Did Jagex change the name?`,
-			);
-		}
-
+		const crocodileTears = quests[QuestId.CrocodileTears];
+		const ourManInTheNorth = quests[QuestId.OurManInTheNorth];
+		const phiteClub = quests[QuestId.PhiteClub];
+		const pharaohsFolly = quests[QuestId.PharaohsFolly];
 		const theJackofSpadesStatus = "**Completed!**";
 		let crocodileTearsStatus = "Incomplete!";
 		let ourManInTheNorthStatus = "Incomplete!";
@@ -151,9 +119,17 @@ export default {
 			}
 		}
 
-		const slayerLevel = String(
-			profileData.skillValues.find(({ id }) => id === SkillId.Slayer)!.level,
+		const hiScoreData = await hiScore({ name }).catch((error) =>
+			pino.warn(error, "Error fetching HiScore data."),
 		);
+
+		// The experience is -1 when the HiScores do not know the real level.
+		if (!hiScoreData || hiScoreData.slayer.xp === -1) {
+			await interaction.editReply(`Cannot find the Slayer level of \`${RSN}\` on the HiScores.`);
+			return;
+		}
+
+		const slayerLevel = String(hiScoreData.slayer.level);
 
 		if (!isLevel(slayerLevel)) {
 			throw new ReferenceError(
@@ -192,11 +168,11 @@ export default {
 				`**Soul Obelisk Cap**: ${(20_060 * reputationModifier).toLocaleString()}\n${nextQuest}`,
 			)
 			.setFields(
-				{ name: QuestTitle.TheJackOfSpades, value: theJackofSpadesStatus },
-				{ name: QuestTitle.CrocodileTears, value: crocodileTearsStatus },
-				{ name: QuestTitle.OurManInTheNorth, value: ourManInTheNorthStatus },
-				{ name: QuestTitle.PhiteClub, value: phiteClubStatus },
-				{ name: QuestTitle.PharaohsFolly, value: pharaohsFollyStatus },
+				{ name: theJackofSpades.title, value: theJackofSpadesStatus },
+				{ name: crocodileTears.title, value: crocodileTearsStatus },
+				{ name: ourManInTheNorth.title, value: ourManInTheNorthStatus },
+				{ name: phiteClub.title, value: phiteClubStatus },
+				{ name: pharaohsFolly.title, value: pharaohsFollyStatus },
 				{
 					name: `Corrupted Scarabs Table (${slayerLevel} Slayer)`,
 					value: `\`\`\`Markdown\n${"Scarabs Slain".padEnd(16)}${"Reputation".padEnd(13)}Experience\n${"01-23".padEnd(

@@ -9,7 +9,6 @@ import {
 	type RESTPostAPIApplicationCommandsJSONBody,
 	Routes,
 } from "discord.js";
-import { QuestTitle } from "runescape";
 import { CallLocationToString, CORRUPTED_EGG_CALL_LOCATIONS } from "../models/Calls.js";
 import { APPLICATION_ID, DISCORD_TOKEN } from "./configuration.js";
 import {
@@ -674,11 +673,11 @@ const COMMANDS: RESTPostAPIApplicationCommandsJSONBody[] = [
 						description: "The highest Menaphos quest you have completed.",
 						required: true,
 						choices: [
-							{ name: QuestTitle.TheJackOfSpades, value: 1.25 },
-							{ name: QuestTitle.CrocodileTears, value: 1.5 },
-							{ name: QuestTitle.OurManInTheNorth, value: 1.75 },
-							{ name: QuestTitle.PhiteClub, value: 2 },
-							{ name: QuestTitle.PharaohsFolly, value: 2.5 },
+							{ name: "The Jack of Spades", value: 1.25 },
+							{ name: "Crocodile Tears", value: 1.5 },
+							{ name: "Our Man in the North", value: 1.75 },
+							{ name: "'Phite Club", value: 2 },
+							{ name: "Pharaoh's Folly", value: 2.5 },
 						],
 					},
 				],

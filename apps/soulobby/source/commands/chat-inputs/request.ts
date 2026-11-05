@@ -5,7 +5,7 @@ import {
 	MessageFlags,
 	type Snowflake,
 } from "discord.js";
-import { hiScore, profile } from "runescape";
+import { hiScore, playerQuests } from "runescape";
 import z from "zod";
 import Request from "../../models/Request.js";
 import UserData from "../../models/UserData.js";
@@ -414,27 +414,24 @@ export default {
 		let RSN = name;
 
 		if (options.getString("name")) {
-			const data =
-				(await profile({ activities: 0, name }).catch((error) =>
-					pino.warn(error, "Error fetching profile data."),
-				)) ??
-				(await hiScore({ name }).catch((error) =>
-					pino.warn(error, "Error fetching HiScore data."),
-				));
+			const [hiScoreData, questData] = await Promise.all([
+				hiScore({ name }).catch((error) => pino.warn(error, "Error fetching HiScore data.")),
+				playerQuests({ name }).catch((error) => pino.warn(error, "Error fetching quest data.")),
+			]);
 
-			if (!data) {
+			if (!hiScoreData) {
 				await interaction.editReply(
-					`Cannot find the HiScores of \`${RSN}\` and the RuneMetrics profile was not public. Does this account exist?`,
+					`Cannot find the HiScores of \`${RSN}\`. Does this account exist?`,
 				);
 
 				return;
 			}
 
-			if ("totalSkill" in data) {
-				totalLevel = data.totalSkill;
-				RSN = data.name;
-			} else {
-				totalLevel = data.total.level;
+			totalLevel = hiScoreData.overall.level;
+
+			// Only the quest data has the canonical display name.
+			if (questData) {
+				RSN = questData.name;
 			}
 		}
 

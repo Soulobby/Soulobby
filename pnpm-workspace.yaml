@@ -12,3 +12,4 @@ minimumReleaseAgeExclude:
   - "@discordjs/rest"
   - "@discordjs/util"
   - "@discordjs/ws"
+  - runescape
