@@ -77,9 +77,8 @@ export default {
 				},
 				{
 					name: "Clan",
-					// The clan pages do not handle spaces, which would otherwise break the hyperlinks.
 					value: clan
-						? `${clan}\n-# ${hyperlink("RuneScape", clanPage(clan.replaceAll(" ", "%20")))} | ${hyperlink("Runepixels", clanPageRunepixels(clan.replaceAll(" ", "-")))}`
+						? `${clan}\n-# ${hyperlink("RuneScape", clanPage(clan))} | ${hyperlink("Runepixels", clanPageRunepixels(clan))}`
 						: "None",
 				},
 			);

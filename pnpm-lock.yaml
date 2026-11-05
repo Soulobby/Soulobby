@@ -31,8 +31,8 @@ importers:
         specifier: ^10.1.0
         version: 10.3.1
       runescape:
-        specifier: ^1.0.0
-        version: 1.0.0
+        specifier: ^1.0.1
+        version: 1.0.1
       zod:
         specifier: ^4.1.13
         version: 4.4.3
@@ -89,8 +89,8 @@ importers:
         specifier: ^10.1.0
         version: 10.3.1
       runescape:
-        specifier: ^1.0.0
-        version: 1.0.0
+        specifier: ^1.0.1
+        version: 1.0.1
       sharp:
         specifier: ^0.35.3
         version: 0.35.3(@types/node@24.13.2)
@@ -1290,8 +1290,8 @@ packages:
   run-parallel@1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
 
-  runescape@1.0.0:
-    resolution: {integrity: sha512-CJ8p4pyiGOD1x5IECyzJk0+1YmVumUsS7MurNtJ2PLxIO6MQ+TiecmP24DRzwI9HNYOokVcfcQXncef5C7Z3Rg==}
+  runescape@1.0.1:
+    resolution: {integrity: sha512-IvuaevlfyD4Mk8k81+pJAfWkOCJDEGPvETtAaR/0FLItTZwPmf4vUo8XTvOOM2ktybnTTmtsOMP14UKlyjsfhA==}
 
   safe-stable-stringify@2.5.0:
     resolution: {integrity: sha512-b3rppTKm9T+PsVCBEOUR46GWI7fdOs00VKZ1+9c1EWDaDMvjQc6tUwuFyIprgGgTcWoVHSKrU8H31ZHA2e0RHA==}
@@ -2553,7 +2553,7 @@ snapshots:
     dependencies:
       queue-microtask: 1.2.3
 
-  runescape@1.0.0:
+  runescape@1.0.1:
     dependencies:
       csv-parse: 7.0.3
 
