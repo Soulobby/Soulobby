@@ -3,8 +3,11 @@ import { playerQuests, QuestStatus } from "runescape";
 import pino from "../../pino.js";
 import { isRSN } from "../../utility/functions.js";
 
+const QUEST_TITLES_LIFETIME = 300_000 as const;
+
 // Quest titles are the same for every player, so one response provides them for everyone.
 let questTitles: readonly string[] = [];
+let questTitlesFetchedAt = 0;
 
 export default {
 	name: "quest" as const,
@@ -58,7 +61,9 @@ export default {
 		const focused = options.getFocused().value.toUpperCase();
 		const name = options.getString("name");
 
-		if (questTitles.length === 0 && name && isRSN(name)) {
+		if (Date.now() - questTitlesFetchedAt >= QUEST_TITLES_LIFETIME && name && isRSN(name)) {
+			questTitlesFetchedAt = Date.now();
+
 			// Autocomplete must respond within 3 seconds and this request can take that long.
 			void playerQuests({ name })
 				.then(({ quests }) => {
@@ -66,7 +71,10 @@ export default {
 						.map(({ title }) => title)
 						.toSorted();
 				})
-				.catch((error) => pino.warn(error, "Error fetching quest data."));
+				.catch((error) => {
+					questTitlesFetchedAt = 0;
+					pino.warn(error, "Error fetching quest data.");
+				});
 		}
 
 		await interaction.respond(
